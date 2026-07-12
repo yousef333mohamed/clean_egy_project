@@ -1,0 +1,18 @@
+truck_id,region,capacity_kg,model_year,fuel_type
+TRK-GRE-01,Greater Cairo,5000,2020,Diesel
+TRK-GRE-02,Greater Cairo,3000,2024,CNG
+TRK-GRE-03,Greater Cairo,12000,2024,Diesel
+TRK-GRE-04,Greater Cairo,12000,2020,Diesel
+TRK-GRE-05,Greater Cairo,5000,2020,Diesel
+TRK-DEL-01,Delta,12000,2019,CNG
+TRK-DEL-02,Delta,3000,2018,Diesel
+TRK-DEL-03,Delta,5000,2022,CNG
+TRK-DEL-04,Delta,3000,2021,Diesel
+TRK-CAN-01,Canal & Sinai,5000,2022,Diesel
+TRK-CAN-02,Canal & Sinai,12000,2023,Diesel
+TRK-UPP-01,Upper Egypt,8000,2024,Diesel
+TRK-UPP-02,Upper Egypt,8000,2021,Diesel
+TRK-UPP-03,Upper Egypt,8000,2016,Diesel
+TRK-COA-01,Coastal & Red Sea,3000,2021,Diesel
+TRK-COA-02,Coastal & Red Sea,12000,2017,Diesel
+TRK-COA-03,Coastal & Red Sea,3000,2018,Diesel

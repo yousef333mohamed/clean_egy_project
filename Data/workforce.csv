@@ -1,0 +1,114 @@
+worker_id,governorate,region,shift,experience_years
+WRK-الو-001,الوادي الجديد,Upper Egypt,Morning,14
+WRK-الو-002,الوادي الجديد,Upper Egypt,Morning,9
+WRK-مطر-001,مطروح,Coastal & Red Sea,Night,13
+WRK-مطر-002,مطروح,Coastal & Red Sea,Morning,14
+WRK-شما-001,شمال سيناء,Canal & Sinai,Morning,9
+WRK-شما-002,شمال سيناء,Canal & Sinai,Morning,11
+WRK-جنو-001,جنوب سيناء,Canal & Sinai,Night,11
+WRK-جنو-002,جنوب سيناء,Canal & Sinai,Evening,9
+WRK-الأ-001,الأقصر,Upper Egypt,Morning,6
+WRK-الأ-002,الأقصر,Upper Egypt,Evening,10
+WRK-الف-001,الفيوم,Upper Egypt,Evening,1
+WRK-الف-002,الفيوم,Upper Egypt,Evening,10
+WRK-الف-003,الفيوم,Upper Egypt,Evening,13
+WRK-الف-004,الفيوم,Upper Egypt,Evening,11
+WRK-الب-001,البحر الأحمر,Coastal & Red Sea,Morning,11
+WRK-الب-002,البحر الأحمر,Coastal & Red Sea,Morning,1
+WRK-كفر-001,كفر الشيخ,Delta,Evening,13
+WRK-كفر-002,كفر الشيخ,Delta,Evening,0
+WRK-كفر-003,كفر الشيخ,Delta,Evening,10
+WRK-كفر-004,كفر الشيخ,Delta,Night,14
+WRK-بني-001,بني سويف,Upper Egypt,Morning,4
+WRK-بني-002,بني سويف,Upper Egypt,Morning,10
+WRK-بور-001,بورسعيد,Canal & Sinai,Evening,7
+WRK-بور-002,بورسعيد,Canal & Sinai,Morning,8
+WRK-دمي-001,دمياط,Delta,Night,8
+WRK-دمي-002,دمياط,Delta,Morning,2
+WRK-الإ-001,الإسماعيلية,Canal & Sinai,Morning,8
+WRK-الإ-002,الإسماعيلية,Canal & Sinai,Evening,13
+WRK-الم-001,المنوفية,Delta,Evening,7
+WRK-الم-002,المنوفية,Delta,Evening,1
+WRK-الم-003,المنوفية,Delta,Morning,11
+WRK-الم-004,المنوفية,Delta,Evening,14
+WRK-سوه-001,سوهاج,Upper Egypt,Morning,6
+WRK-سوه-002,سوهاج,Upper Egypt,Morning,0
+WRK-سوه-003,سوهاج,Upper Egypt,Night,6
+WRK-سوه-004,سوهاج,Upper Egypt,Morning,7
+WRK-الم-001,المنيا,Upper Egypt,Night,0
+WRK-الم-002,المنيا,Upper Egypt,Night,9
+WRK-الم-003,المنيا,Upper Egypt,Evening,2
+WRK-الم-004,المنيا,Upper Egypt,Night,6
+WRK-الس-001,السويس,Canal & Sinai,Night,8
+WRK-الس-002,السويس,Canal & Sinai,Evening,5
+WRK-قنا-001,قنا,Upper Egypt,Morning,5
+WRK-قنا-002,قنا,Upper Egypt,Morning,10
+WRK-الش-001,الشرقية,Delta,Evening,1
+WRK-الش-002,الشرقية,Delta,Morning,6
+WRK-الش-003,الشرقية,Delta,Morning,8
+WRK-الش-004,الشرقية,Delta,Morning,2
+WRK-الش-005,الشرقية,Delta,Evening,12
+WRK-الش-006,الشرقية,Delta,Evening,3
+WRK-أسي-001,أسيوط,Upper Egypt,Morning,1
+WRK-أسي-002,أسيوط,Upper Egypt,Evening,9
+WRK-أسي-003,أسيوط,Upper Egypt,Morning,0
+WRK-أسي-004,أسيوط,Upper Egypt,Morning,12
+WRK-أسو-001,أسوان,Upper Egypt,Morning,0
+WRK-أسو-002,أسوان,Upper Egypt,Evening,12
+WRK-الب-001,البحيرة,Delta,Morning,8
+WRK-الب-002,البحيرة,Delta,Evening,6
+WRK-الب-003,البحيرة,Delta,Evening,5
+WRK-الب-004,البحيرة,Delta,Morning,11
+WRK-الب-005,البحيرة,Delta,Evening,4
+WRK-الب-006,البحيرة,Delta,Evening,7
+WRK-الد-001,الدقهلية,Delta,Morning,8
+WRK-الد-002,الدقهلية,Delta,Evening,6
+WRK-الد-003,الدقهلية,Delta,Morning,3
+WRK-الد-004,الدقهلية,Delta,Morning,1
+WRK-الق-001,القليوبية,Greater Cairo,Morning,2
+WRK-الق-002,القليوبية,Greater Cairo,Morning,13
+WRK-الق-003,القليوبية,Greater Cairo,Evening,11
+WRK-الق-004,القليوبية,Greater Cairo,Morning,5
+WRK-الج-001,الجيزة,Greater Cairo,Night,12
+WRK-الج-002,الجيزة,Greater Cairo,Morning,2
+WRK-الج-003,الجيزة,Greater Cairo,Morning,8
+WRK-الج-004,الجيزة,Greater Cairo,Evening,7
+WRK-الج-005,الجيزة,Greater Cairo,Evening,3
+WRK-الج-006,الجيزة,Greater Cairo,Evening,9
+WRK-الج-007,الجيزة,Greater Cairo,Morning,4
+WRK-الج-008,الجيزة,Greater Cairo,Evening,13
+WRK-الج-009,الجيزة,Greater Cairo,Morning,13
+WRK-الج-010,الجيزة,Greater Cairo,Night,8
+WRK-الج-011,الجيزة,Greater Cairo,Evening,6
+WRK-الغ-001,الغربية,Delta,Morning,12
+WRK-الغ-002,الغربية,Delta,Morning,14
+WRK-الغ-003,الغربية,Delta,Morning,0
+WRK-الغ-004,الغربية,Delta,Night,13
+WRK-الق-001,القاهرة,Greater Cairo,Night,5
+WRK-الق-002,القاهرة,Greater Cairo,Morning,1
+WRK-الق-003,القاهرة,Greater Cairo,Night,1
+WRK-الق-004,القاهرة,Greater Cairo,Morning,1
+WRK-الق-005,القاهرة,Greater Cairo,Morning,4
+WRK-الق-006,القاهرة,Greater Cairo,Evening,2
+WRK-الق-007,القاهرة,Greater Cairo,Evening,5
+WRK-الق-008,القاهرة,Greater Cairo,Night,2
+WRK-الق-009,القاهرة,Greater Cairo,Morning,1
+WRK-الق-010,القاهرة,Greater Cairo,Morning,8
+WRK-الق-011,القاهرة,Greater Cairo,Evening,7
+WRK-الق-012,القاهرة,Greater Cairo,Evening,1
+WRK-الق-013,القاهرة,Greater Cairo,Morning,14
+WRK-الق-014,القاهرة,Greater Cairo,Evening,2
+WRK-الق-015,القاهرة,Greater Cairo,Morning,1
+WRK-الق-016,القاهرة,Greater Cairo,Night,1
+WRK-الق-017,القاهرة,Greater Cairo,Morning,6
+WRK-الق-018,القاهرة,Greater Cairo,Evening,9
+WRK-الق-019,القاهرة,Greater Cairo,Night,5
+WRK-الق-020,القاهرة,Greater Cairo,Evening,4
+WRK-الق-021,القاهرة,Greater Cairo,Morning,14
+WRK-الق-022,القاهرة,Greater Cairo,Morning,12
+WRK-الأ-001,الأسكندرية,Coastal & Red Sea,Evening,13
+WRK-الأ-002,الأسكندرية,Coastal & Red Sea,Morning,4
+WRK-الأ-003,الأسكندرية,Coastal & Red Sea,Morning,8
+WRK-الأ-004,الأسكندرية,Coastal & Red Sea,Morning,0
+WRK-الأ-005,الأسكندرية,Coastal & Red Sea,Morning,1
+WRK-الأ-006,الأسكندرية,Coastal & Red Sea,Morning,1
