@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     app_name: str = "WasteOps Decision Intelligence Copilot"
     app_environment: str = "development"
     log_level: str = "INFO"
+    cors_allowed_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     database_url: str
     database_sync_url: str
     database_pool_size: int = Field(default=10, ge=1)

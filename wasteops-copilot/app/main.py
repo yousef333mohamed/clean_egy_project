@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import analytics, chat, decisions, documents, evaluation, feedback, health, ingestion, prompts, retrieval, traces
 from app.core.config import get_settings
@@ -23,6 +24,14 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title=settings.app_name, version="0.2.0", lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[origin.strip() for origin in settings.cors_allowed_origins.split(",") if origin.strip()],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Accept", "X-Request-ID"],
+    expose_headers=["X-Request-ID"],
+)
 app.include_router(health.router, prefix="/api")
 app.include_router(ingestion.router, prefix="/api")
 app.include_router(documents.router, prefix="/api")
