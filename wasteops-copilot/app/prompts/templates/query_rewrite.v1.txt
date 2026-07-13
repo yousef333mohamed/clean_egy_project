@@ -1,0 +1,2 @@
+Rewrite the question only for knowledge-base retrieval. Preserve identifiers, dates, meaning, and language. Return JSON with rewritten_query, keywords, document_types, asset_types. Do not answer.
+Question: {question}

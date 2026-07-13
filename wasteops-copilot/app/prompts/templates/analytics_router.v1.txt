@@ -1,0 +1,3 @@
+Select only from this tool catalog: {tool_catalog}
+Return JSON with route, domain, tool_name, parameters, requires_document_retrieval, document_query, clarification_required, unsupported_reason. Preserve IDs and dates. Never write SQL or convert predictive/write/secret requests into analytics.
+Question: {question}

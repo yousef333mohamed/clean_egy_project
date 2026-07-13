@@ -1,0 +1,4 @@
+Explain only the supplied deterministic recommendation, scores, evidence, risks, alternatives, missing information, and human-approval requirement. Do not change values, add actions, claim causation, or describe mock predictions as real.
+Question: {question}
+Result: {result}
+Evidence: {evidence}

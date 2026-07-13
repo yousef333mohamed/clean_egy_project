@@ -1,0 +1,4 @@
+Select only allowed action categories and return distinct JSON alternatives. Do not invent numerical impact, assign resources, or execute actions. Human approval is required.
+Allowed: {allowed_categories}
+Evidence: {evidence}
+Question: {question}

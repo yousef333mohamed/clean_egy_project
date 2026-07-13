@@ -9,6 +9,7 @@ from app.core.logging import get_logger
 from app.decision.enums import ConfidenceLevel, DecisionEvidenceType
 from app.schemas.confidence import ConfidenceComponents, DecisionConfidence
 from app.schemas.decision import DecisionDebugResponse, DecisionResponse
+from app.prompts.registry import PromptRegistry
 from app.utils.prompt_loader import load_prompt
 
 logger = get_logger(__name__)
@@ -42,6 +43,7 @@ class DecisionIntelligenceService:
         self.decision_registry = decision_registry
         self.settings = settings
         self.llm_service = llm_service
+        self.prompt_registry = getattr(llm_service, "prompt_registry", PromptRegistry())
 
     async def preview(self, request):
         from app.schemas.decision import DecisionPreviewResponse
@@ -152,13 +154,15 @@ class DecisionIntelligenceService:
         if self.llm_service is None:
             warnings.append("Model explanation was unavailable; deterministic decision fields remain authoritative.")
             return self._deterministic_explanation(request.question, recommended, confidence, missing)
-        prompt = load_prompt("decision_explanation_prompt.txt").format(
+        resolved = await self.prompt_registry.get_active_prompt("decision_explanation")
+        prompt = resolved.content.format(
             question=request.question,
             result=json.dumps(result, ensure_ascii=False),
             evidence=json.dumps([item.model_dump(mode="json") for item in collected.evidence], ensure_ascii=False),
         )
         answer = await self.llm_service.generate_grounded_answer(
-            system_prompt="Explain the fixed deterministic result only. Do not create actions or scores.", user_prompt=prompt
+            system_prompt="Explain the fixed deterministic result only. Do not create actions or scores.", user_prompt=prompt,
+            prompt_key=resolved.prompt_key, prompt_version=resolved.version,
         )
         valid_ids = {item.evidence_id for item in collected.evidence}
         invalid = set(CITATION.findall(answer)) - valid_ids

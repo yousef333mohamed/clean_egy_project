@@ -1,0 +1,8 @@
+{
+  "name": "wasteops_rag_v1", "version": "1.0.0", "evaluation_type": "rag",
+  "cases": [
+    {"case_id":"RAG-001","category":"sensor_fault","question":"What is the sensor fault procedure?","expected_route":null,"expected_tool":null,"expected_documents":[],"expected_citation_types":[],"expected_concepts":["sensor","inspection"],"forbidden_concepts":["automatic dispatch"],"expected_insufficient_context":false,"expected_human_approval":null,"severity":"MEDIUM","language":"en","expected":{"answer":"Use the sensor inspection procedure.","evidence_text":"sensor inspection"}},
+    {"case_id":"RAG-002","category":"missed_collection","question":"ما هو إجراء الجمع الفائت؟","expected_route":null,"expected_tool":null,"expected_documents":[],"expected_citation_types":[],"expected_concepts":["إجراء"],"forbidden_concepts":[],"expected_insufficient_context":false,"expected_human_approval":null,"severity":"MEDIUM","language":"ar","expected":{"answer":"اتبع إجراء التصعيد.","evidence_text":"إجراء التصعيد"}},
+    {"case_id":"RAG-003","category":"unsupported","question":"Tell me an undocumented policy for BIN-404","expected_route":null,"expected_tool":null,"expected_documents":[],"expected_citation_types":[],"expected_concepts":["insufficient"],"forbidden_concepts":["official policy"],"expected_insufficient_context":true,"expected_human_approval":null,"severity":"HIGH","language":"mixed","expected":{"answer":"insufficient context","evidence_text":""}}
+  ]
+}

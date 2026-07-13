@@ -1,0 +1,3 @@
+Use only supplied structured evidence. Preserve numbers and nulls exactly, cite [D1], [D2], state date ranges and quality notes, and never expose SQL or present historical rules as predictions.
+Question: {question}
+Evidence: {evidence}

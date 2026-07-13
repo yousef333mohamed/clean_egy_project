@@ -16,16 +16,18 @@ from app.models.smart_bin import SmartBin
 from app.models.truck_trip_log import TruckTripLog
 from app.models.worker import Worker
 from app.models.workforce_attendance import WorkforceAttendance
+from app.observability.tracer import Tracer
 
 logger = get_logger(__name__)
 
 
 class AnalyticsService:
-    def __init__(self, registry, settings) -> None:
+    def __init__(self, registry, settings, *, tracer: Tracer | None = None) -> None:
         self.registry = registry
         self.parser = ParameterParser(registry, settings)
         self.evidence_builder = EvidenceBuilder()
         self.executor = QueryExecutor(settings)
+        self.tracer = tracer or Tracer(settings=settings)
 
     async def _resolve_latest(self, tool_name, params, session):
         if not params.latest_available:
@@ -106,6 +108,13 @@ class AnalyticsService:
         return params.model_copy(update=update)
 
     async def execute(self, tool_name: str, parameters, session: AsyncSession):
+        async with self.tracer.span("ANALYTICS_TOOL", {"tool_name": tool_name}) as span:
+            evidence = await self._execute(tool_name, parameters, session)
+            span.set_metric("row_count", evidence.record_count)
+            span.set_metric("no_data", not evidence.rows)
+            return evidence
+
+    async def _execute(self, tool_name: str, parameters, session: AsyncSession):
         started = time.perf_counter()
         tool = self.registry.get(tool_name)
         params = self.parser.parse(tool_name, parameters)

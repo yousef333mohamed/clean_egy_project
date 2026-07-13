@@ -9,6 +9,7 @@ from app.core.logging import get_logger
 from app.retrieval.citation_builder import CitationBuilder
 from app.schemas.chat import RAGRequest, RAGResponse
 from app.schemas.retrieval import RetrievalRequest
+from app.prompts.registry import PromptRegistry
 from app.utils.prompt_loader import load_prompt
 
 logger = get_logger(__name__)
@@ -17,12 +18,13 @@ logger = get_logger(__name__)
 class RAGService:
     """Generate answers only from retrieved, delimited, citation-mapped evidence."""
 
-    def __init__(self, retrieval_service, context_builder, llm_service, settings: Settings | None = None) -> None:
+    def __init__(self, retrieval_service, context_builder, llm_service, settings: Settings | None = None, prompt_registry: PromptRegistry | None = None) -> None:
         self.retrieval_service = retrieval_service
         self.context_builder = context_builder
         self.llm_service = llm_service
         self.settings = settings or get_settings()
         self.citation_builder = CitationBuilder()
+        self.prompt_registry = prompt_registry or getattr(llm_service, "prompt_registry", PromptRegistry())
 
     @staticmethod
     def _authority_warnings(evidence) -> list[str]:
@@ -92,10 +94,12 @@ class RAGService:
                 request_id=request_id,
                 debug=retrieval.debug if debug_enabled else None,
             )
-        system_prompt = load_prompt("rag_system_prompt.txt")
-        user_prompt = load_prompt("rag_answer_prompt.txt").format(question=retrieval.query, context=context.context_text)
+        system_resolved = await self.prompt_registry.get_active_prompt("rag_system")
+        answer_resolved = await self.prompt_registry.get_active_prompt("rag_answer")
+        system_prompt = system_resolved.content
+        user_prompt = answer_resolved.content.format(question=retrieval.query, context=context.context_text)
         generation_started = time.perf_counter()
-        answer = await self.llm_service.generate_grounded_answer(system_prompt=system_prompt, user_prompt=user_prompt)
+        answer = await self.llm_service.generate_grounded_answer(system_prompt=system_prompt, user_prompt=user_prompt, prompt_key=answer_resolved.prompt_key, prompt_version=answer_resolved.version)
         generation_duration = time.perf_counter() - generation_started
         validation = self.citation_builder.validate_answer_citations(answer, context.citations)
         warnings.extend(validation.warnings)

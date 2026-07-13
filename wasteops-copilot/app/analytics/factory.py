@@ -11,16 +11,18 @@ from app.services.hybrid_intelligence_service import HybridIntelligenceService
 from app.services.llm_service import LLMConfigurationError, LLMService
 from app.services.rag_service import RAGService
 from app.utils.token_counter import TokenCounter
+from app.prompts.registry import PromptRegistry
+from app.observability.tracer import Tracer
 
 
 def build_analytics_stack(session, settings):
     registry = build_tool_registry(settings)
     try:
-        llm = LLMService(settings)
+        llm = LLMService(settings, prompt_registry=PromptRegistry(session), tracer=Tracer(session, settings))
     except LLMConfigurationError:
         llm = None
     router = AnalyticsRouterService(registry, settings, llm_service=llm)
-    analytics = AnalyticsService(registry, settings)
+    analytics = AnalyticsService(registry, settings, tracer=Tracer(session, settings))
     answer = AnalyticsAnswerService(llm)
     return registry, router, analytics, answer, llm
 

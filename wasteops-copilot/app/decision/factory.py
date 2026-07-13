@@ -16,6 +16,8 @@ from app.services.embedding_service import EmbeddingConfigurationError, Embeddin
 from app.services.llm_service import LLMConfigurationError, LLMService
 from app.services.decision_intelligence_service import DecisionIntelligenceService
 from app.utils.token_counter import TokenCounter
+from app.prompts.registry import PromptRegistry
+from app.observability.tracer import Tracer
 
 
 class _UnavailableEmbedding:
@@ -37,6 +39,9 @@ def build_decision_preview(settings):
 
 def build_decision_service(session, settings) -> DecisionIntelligenceService:
     decision_registry, analytics_registry, router, planner, llm = build_decision_preview(settings)
+    if llm is not None:
+        llm.prompt_registry = PromptRegistry(session)
+        llm.tracer = Tracer(session, settings)
     try:
         embedding = EmbeddingService(settings)
     except EmbeddingConfigurationError:
@@ -48,7 +53,7 @@ def build_decision_service(session, settings) -> DecisionIntelligenceService:
         query_rewriter=llm if llm and settings.retrieval_enable_query_rewrite else None,
     )
     context = ContextBuilder(TokenCounter(settings.chat_model_name))
-    analytics = AnalyticsService(analytics_registry, settings)
+    analytics = AnalyticsService(analytics_registry, settings, tracer=Tracer(session, settings))
     collector = DecisionEvidenceCollector(analytics, retrieval, context, session, settings)
     return DecisionIntelligenceService(
         router,

@@ -6,7 +6,7 @@ import time
 import uuid
 
 from app.schemas.analytics import AnalyticsResponse, DatabaseCitation
-from app.utils.prompt_loader import load_prompt
+from app.prompts.registry import PromptRegistry
 from app.services.llm_service import LLMConfigurationError
 from app.core.logging import get_logger
 
@@ -19,6 +19,7 @@ NUMBER = re.compile(r"(?<![\w-])-?\d+(?:\.\d+)?")
 class AnalyticsAnswerService:
     def __init__(self, llm_service) -> None:
         self.llm_service = llm_service
+        self.prompt_registry = getattr(llm_service, "prompt_registry", PromptRegistry())
 
     @staticmethod
     def _insufficient(evidence) -> bool:
@@ -38,12 +39,14 @@ class AnalyticsAnswerService:
         else:
             if self.llm_service is None:
                 raise LLMConfigurationError("LLM_API_KEY is required for generated analytics answers")
-            prompt = load_prompt("analytics_answer_prompt.txt").format(
+            resolved = await self.prompt_registry.get_active_prompt("analytics_answer")
+            prompt = resolved.content.format(
                 question=question, evidence=json.dumps(evidence.model_dump(mode="json"), ensure_ascii=False)
             )
             generation_started = time.perf_counter()
             answer = await self.llm_service.generate_grounded_answer(
-                system_prompt="Use only D-prefixed structured evidence. Never expose or generate SQL.", user_prompt=prompt
+                system_prompt="Use only D-prefixed structured evidence. Never expose or generate SQL.", user_prompt=prompt,
+                prompt_key=resolved.prompt_key, prompt_version=resolved.version,
             )
             logger.info(
                 "analytics_answer_generated",

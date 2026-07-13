@@ -1,0 +1,3 @@
+Use only supplied evidence. Cite database facts as [D1] and documents as [S1]. Keep namespaces separate, preserve values, mark synthetic sources, and never infer causes or predictions.
+Question: {question}
+Evidence: {evidence}

@@ -8,6 +8,8 @@ from app.core.logging import get_logger
 from app.retrieval.metadata_filters import normalized_filters
 from app.schemas.retrieval import RetrievalRequest, RetrievalResponse
 from app.utils.text_similarity import limit_document_chunks
+from app.observability.tracer import Tracer
+from app.observability.context import request_id_var
 
 logger = get_logger(__name__)
 
@@ -15,14 +17,27 @@ logger = get_logger(__name__)
 class RetrievalService:
     """Coordinate injected query, embedding, hybrid, and reranking services."""
 
-    def __init__(self, query_processor, embedding_service, hybrid_retriever, reranker, settings: Settings | None = None) -> None:
+    def __init__(self, query_processor, embedding_service, hybrid_retriever, reranker, settings: Settings | None = None, tracer: Tracer | None = None) -> None:
         self.query_processor = query_processor
         self.embedding_service = embedding_service
         self.hybrid_retriever = hybrid_retriever
         self.reranker = reranker
         self.settings = settings or get_settings()
+        self.tracer = tracer or Tracer(settings=self.settings)
 
     async def search(self, request: RetrievalRequest, *, request_id: str | None = None) -> RetrievalResponse:
+        token = request_id_var.set(request_id) if request_id else None
+        try:
+            async with self.tracer.span("RETRIEVAL", {"filters": normalized_filters(request.filters), "top_k": request.top_k}) as span:
+                response = await self._search(request, request_id=request_id)
+                span.set_metric("retrieved_chunks", len(response.evidence))
+                span.set_metric("insufficient_context", not response.evidence)
+                return response
+        finally:
+            if token is not None:
+                request_id_var.reset(token)
+
+    async def _search(self, request: RetrievalRequest, *, request_id: str | None = None) -> RetrievalResponse:
         started = time.perf_counter()
         processed = await self.query_processor.process(request.query)
         embedding = await self.embedding_service.embed_text(processed.retrieval_query)

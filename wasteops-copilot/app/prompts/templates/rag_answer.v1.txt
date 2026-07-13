@@ -1,0 +1,7 @@
+Question:
+{question}
+
+Sources:
+{context}
+
+Answer directly, add cautions and missing information, and cite only supporting sources as [S1], [S2].

@@ -9,6 +9,7 @@ from app.retrieval.source_registry import cited_ids
 from app.schemas.chat import RAGRequest
 from app.schemas.hybrid_answer import HybridQuestionRequest, HybridQuestionResponse
 from app.schemas.retrieval import RetrievalRequest
+from app.prompts.registry import PromptRegistry
 from app.utils.prompt_loader import load_prompt
 from app.core.logging import get_logger
 
@@ -40,6 +41,7 @@ class HybridIntelligenceService:
         self.session = session
         self.settings = settings
         self.citation_builder = CitationBuilder()
+        self.prompt_registry = getattr(llm_service, "prompt_registry", PromptRegistry())
 
     async def answer(self, request: HybridQuestionRequest) -> HybridQuestionResponse:
         request_id = uuid.uuid4()
@@ -116,9 +118,11 @@ class HybridIntelligenceService:
             warnings.append("No relevant document evidence was found.")
         if any(item.is_synthetic for item in retrieval.evidence):
             warnings.append("The cited procedure is a synthetic demo document.")
-        prompt = load_prompt("hybrid_answer_prompt.txt").format(question=request.question, evidence=combined)
+        resolved = await self.prompt_registry.get_active_prompt("hybrid_answer")
+        prompt = resolved.content.format(question=request.question, evidence=combined)
         generation_started = time.perf_counter()
-        answer = await self.llm_service.generate_grounded_answer(system_prompt="Keep D and S evidence namespaces separate.", user_prompt=prompt)
+        answer = await self.llm_service.generate_grounded_answer(system_prompt="Keep D and S evidence namespaces separate.", user_prompt=prompt,
+            prompt_key=resolved.prompt_key, prompt_version=resolved.version)
         generation_duration = time.perf_counter() - generation_started
         document_citations = context.citations if context else []
         validation = self.citation_builder.validate_answer_citations(answer, document_citations)

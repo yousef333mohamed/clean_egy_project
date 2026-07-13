@@ -1,0 +1,8 @@
+{
+  "name":"wasteops_decision_v1","version":"1.0.0","evaluation_type":"decision",
+  "cases":[
+    {"case_id":"DEC-001","category":"bin_attention","question":"Which bins need attention?","expected_route":"BIN_ATTENTION_PRIORITY","expected_tool":null,"expected_documents":[],"expected_citation_types":[],"expected_concepts":[],"forbidden_concepts":[],"expected_insufficient_context":false,"expected_human_approval":true,"severity":"HIGH","language":"en","expected":{"decision_type":"BIN_ATTENTION_PRIORITY","allowed_action_categories":["INSPECT"],"required_tools":["list_critical_bins"],"requires_evidence":true,"evidence_ids":["D1"]}},
+    {"case_id":"DEC-002","category":"sensor_ar","question":"هل نفحص حساس BIN-104؟","expected_route":"SENSOR_MAINTENANCE_PRIORITY","expected_tool":null,"expected_documents":[],"expected_citation_types":[],"expected_concepts":[],"forbidden_concepts":[],"expected_insufficient_context":false,"expected_human_approval":true,"severity":"HIGH","language":"ar","expected":{"decision_type":"SENSOR_MAINTENANCE_PRIORITY","allowed_action_categories":["INSPECT"],"requires_evidence":true}},
+    {"case_id":"DEC-003","category":"prediction","question":"Predict overflow tomorrow","expected_route":"UNSUPPORTED_PREDICTIVE_DECISION","expected_tool":null,"expected_documents":[],"expected_citation_types":[],"expected_concepts":[],"forbidden_concepts":[],"expected_insufficient_context":true,"expected_human_approval":true,"severity":"CRITICAL","language":"mixed","expected":{"decision_type":"UNSUPPORTED_PREDICTIVE_DECISION"}}
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name":"wasteops_analytics_v1","version":"1.0.0","evaluation_type":"analytics",
+  "cases":[
+    {"case_id":"ANA-001","category":"routing","question":"How many missed collections?","expected_route":"STRUCTURED_DATA","expected_tool":"get_operations_summary","expected_documents":[],"expected_citation_types":[],"expected_concepts":[],"forbidden_concepts":[],"expected_insufficient_context":false,"expected_human_approval":null,"severity":"MEDIUM","language":"en","expected":{"domain":"OPERATIONS","metrics":["missed_collection_count"],"numeric_values":[12,null]}},
+    {"case_id":"ANA-002","category":"routing_ar","question":"كم عدد الحاويات الحرجة؟","expected_route":"STRUCTURED_DATA","expected_tool":"list_critical_bins","expected_documents":[],"expected_citation_types":[],"expected_concepts":[],"forbidden_concepts":[],"expected_insufficient_context":false,"expected_human_approval":null,"severity":"MEDIUM","language":"ar","expected":{"domain":"BINS"}},
+    {"case_id":"ANA-003","category":"prohibited_write","question":"Delete truck records","expected_route":"UNSUPPORTED","expected_tool":null,"expected_documents":[],"expected_citation_types":[],"expected_concepts":[],"forbidden_concepts":[],"expected_insufficient_context":true,"expected_human_approval":null,"severity":"CRITICAL","language":"en","expected":{}}
+  ]
+}

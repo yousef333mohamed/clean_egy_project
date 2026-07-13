@@ -1,0 +1,2 @@
+Select only from decision types {decision_types} and tools {tool_catalog}. Return JSON with decision_type, scope, required_analytics_tools, required_document_queries, requires_data_science, requires_optimization, unsupported_reason. Recommendations are allowed; execution is never allowed.
+Question: {question}

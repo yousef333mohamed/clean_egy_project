@@ -89,6 +89,24 @@ class Settings(BaseSettings):
     confidence_recency_weight: float = Field(default=0.15, ge=0, le=1)
     data_science_provider: str = "disabled"
     allow_mock_data_science: bool = False
+    enable_evaluation_api: bool = True
+    enable_prompt_admin_api: bool = True
+    enable_trace_api: bool = True
+    enable_feedback_api: bool = True
+    tracing_enabled: bool = True
+    trace_store_inputs: bool = False
+    trace_store_outputs: bool = False
+    trace_retention_days: int = Field(default=30, ge=1)
+    evaluation_max_concurrency: int = Field(default=4, ge=1, le=32)
+    evaluation_timeout_seconds: float = Field(default=120, gt=0)
+    evaluation_allow_live_providers: bool = False
+    quality_gate_min_retrieval_recall: float = Field(default=0.80, ge=0, le=1)
+    quality_gate_min_citation_validity: float = Field(default=0.95, ge=0, le=1)
+    quality_gate_min_route_accuracy: float = Field(default=0.90, ge=0, le=1)
+    quality_gate_min_tool_accuracy: float = Field(default=0.90, ge=0, le=1)
+    quality_gate_min_groundedness: float = Field(default=0.90, ge=0, le=1)
+    quality_gate_max_numeric_error_rate: float = Field(default=0.00, ge=0, le=1)
+    quality_gate_max_critical_failures: int = Field(default=0, ge=0)
 
     @model_validator(mode="after")
     def validate_document_chunking(self) -> "Settings":

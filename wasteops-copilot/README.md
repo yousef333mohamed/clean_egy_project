@@ -320,3 +320,27 @@ Current recommendations are decision support based on historical or latest avail
 Option scores are calculated only in application code as `service impact × 0.30 + urgency × 0.25 + risk control × 0.20 + feasibility × 0.15 + policy alignment × 0.10`. Components are bounded from zero to one. Review/monitoring actions score higher on known feasibility than actions requiring unconfirmed resources. Current official guidance gives policy alignment `1.0`, unknown-authority guidance `0.5`, synthetic guidance `0.25`, and no document guidance is neutral at `0.5` unless document guidance is configured as mandatory.
 
 Confidence is calculated as `retrieval coverage × 0.25 + source quality × 0.25 + data completeness × 0.20 + source agreement × 0.15 + recency × 0.15`. Source-quality inputs are `1.0` for current official guidance, `0.9` for database evidence, `0.7` for transparent configured rules, `0.5` for unknown-authority guidance, and `0.25` for synthetic guidance. Levels are low below `0.40`, medium from `0.40` through `0.69`, and high from `0.70`. These are evidence-quality heuristics, not scientific certainty or correctness probabilities.
+# Evaluation, prompt governance, and observability
+
+Seed immutable prompt versions after applying migrations:
+
+```bash
+python scripts/seed_prompt_versions.py
+```
+
+Run the deterministic fake-provider release suites (live providers are disabled by default):
+
+```bash
+python scripts/run_evaluations.py --all
+python scripts/run_evaluations.py --dataset evaluation_datasets/safety/wasteops_safety_v1.json
+```
+
+Compare persisted runs without activating either prompt:
+
+```bash
+python scripts/compare_evaluation_runs.py --baseline <run-id> --candidate <run-id>
+```
+
+Evaluations check concepts, routes, tools, citations, identifiers, numbers, nulls, scores, and safety; they do not require exact generated wording. Similarity scores are ranking signals, not confidence probabilities. Decision confidence is an evidence-quality score. Every provider request records its prompt key and immutable version, while traces retain only bounded sanitized summaries. Full prompts, documents, SQL, embeddings, credentials, and complete model outputs are excluded from trace APIs and reports.
+
+The deterministic quality gate must pass before deployment and cannot be decided by an LLM. The evaluation, prompt administration, trace, and feedback summary APIs are development/administrative surfaces and **must be protected by authentication before production**.
