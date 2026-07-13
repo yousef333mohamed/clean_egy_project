@@ -20,6 +20,7 @@ from app.models.workforce_attendance import WorkforceAttendance
 from app.models.user_feedback import FeedbackType, UserFeedback
 from app.audit.models import AuditEvent
 from app.models.ml_prediction import MLDataQualityEvent, MLDriftReport, MLModelVersion, MLPerformanceReport, MLPrediction, MLPredictionRun
+from app.models.optimization_plan import OptimizationPlan
 
 __all__ = [
     "Base",
@@ -52,4 +53,5 @@ __all__ = [
     "MLDataQualityEvent",
     "MLDriftReport",
     "MLPerformanceReport",
+    "OptimizationPlan",
 ]

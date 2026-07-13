@@ -14,6 +14,11 @@ ML_PREDICTION_LATENCY = Histogram("wasteops_ml_prediction_duration_seconds", "ML
 ML_MODEL_VERSION_USAGE = Counter("wasteops_ml_model_version_usage_total", "Approved model version usage", ["model", "version"])
 ML_MODEL_UNAVAILABLE = Counter("wasteops_ml_model_unavailable_total", "ML model unavailable responses", ["model"])
 ML_PREDICTION_WARNINGS = Counter("wasteops_ml_prediction_warnings_total", "Prediction warning categories", ["model", "category"])
+OPTIMIZATION_REQUESTS = Counter("wasteops_optimization_requests_total", "Route optimization provider requests")
+OPTIMIZATION_FAILURES = Counter("wasteops_optimization_failures_total", "Route optimization provider failures", ["reason"])
+OPTIMIZATION_LATENCY = Histogram("wasteops_optimization_duration_seconds", "Route optimization provider request duration")
+OPTIMIZATION_RESULTS = Counter("wasteops_optimization_results_total", "Route optimization solve results", ["status"])
+OPTIMIZATION_UNASSIGNED_BINS = Counter("wasteops_optimization_unassigned_bins_total", "Bins left unassigned by route plans")
 
 
 def metrics_response() -> tuple[bytes, str]:

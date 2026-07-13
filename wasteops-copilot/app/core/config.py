@@ -146,6 +146,11 @@ class Settings(BaseSettings):
     ml_client_max_retries: int = Field(default=2, ge=0, le=5)
     ml_circuit_breaker_failure_threshold: int = Field(default=5, ge=1, le=20)
     ml_circuit_breaker_recovery_seconds: float = Field(default=60, gt=0, le=600)
+    optimization_provider: str = "disabled"
+    optimization_service_base_url: str = "http://optimization_service:8002"
+    optimization_service_token: str = Field(default="", repr=False)
+    optimization_service_token_file: str = ""
+    optimization_timeout_seconds: float = Field(default=30, gt=0, le=120)
     enable_evaluation_api: bool = True
     enable_prompt_admin_api: bool = True
     enable_trace_api: bool = True
@@ -172,7 +177,16 @@ class Settings(BaseSettings):
         if not isinstance(values, dict):
             return values
         output = dict(values)
-        for target in ("database_url", "database_sync_url", "redis_url", "llm_api_key", "metrics_token", "ml_service_token", "ml_admin_service_token"):
+        for target in (
+            "database_url",
+            "database_sync_url",
+            "redis_url",
+            "llm_api_key",
+            "metrics_token",
+            "ml_service_token",
+            "ml_admin_service_token",
+            "optimization_service_token",
+        ):
             file_value = output.get(f"{target}_file")
             if file_value and not output.get(target):
                 path = Path(str(file_value))
@@ -227,6 +241,10 @@ class Settings(BaseSettings):
             raise ValueError("ALLOW_MOCK_DATA_SCIENCE must be true to use the mock provider")
         if self.data_science_provider == "remote" and (not self.ml_service_base_url.startswith(("http://", "https://")) or not self.ml_service_token):
             raise ValueError("Remote Data Science requires ML_SERVICE_BASE_URL and ML_SERVICE_TOKEN")
+        if self.optimization_provider not in {"disabled", "remote"}:
+            raise ValueError("OPTIMIZATION_PROVIDER must be disabled or remote")
+        if self.optimization_provider == "remote" and not self.optimization_service_token:
+            raise ValueError("Remote optimization requires OPTIMIZATION_SERVICE_TOKEN")
         if self.auth_provider != "oidc":
             raise ValueError("AUTH_PROVIDER must be oidc")
         algorithms = {item.strip() for item in self.jwt_allowed_algorithms.split(",") if item.strip()}

@@ -235,7 +235,7 @@ curl -X POST http://localhost:8000/api/chat/rag \
 
 Retrieval scores are ranking signals, not calibrated probabilities or confidence percentages. Answers depend entirely on active documents in the knowledge base, and the assistant returns an insufficient-context response instead of inventing missing company procedures. Synthetic documents are demonstration material and are explicitly labelled as non-authoritative.
 
-Text-to-SQL, optimization, and Data Science integrations remain intentionally disabled.
+Text-to-SQL remains intentionally disabled. Governed Data Science predictions and approval-gated route optimization are available when their private providers are configured.
 
 ## Data-model notes
 
@@ -279,7 +279,7 @@ curl -X POST http://localhost:8000/api/analytics/query \
 
 Development endpoints include `GET /api/analytics/tools`, `POST /api/analytics/tools/{tool_name}`, `POST /api/analytics/query`, `POST /api/analytics/route`, and `POST /api/chat/hybrid`. Tool descriptions never include SQL.
 
-Analytics results describe historical records, not predictions or causal conclusions. Missing measurements are excluded and reported rather than converted to zero. The 80% fill, 20% battery, and truck anomaly multipliers are configured operational rules and are not asserted to be official policy. Hybrid answers keep database facts separate from document guidance. Predictive overflow, optimization, and forecasting remain future Data Science work.
+Analytics results describe historical records, not predictions or causal conclusions. Missing measurements are excluded and reported rather than converted to zero. The 80% fill, 20% battery, and truck anomaly multipliers are configured operational rules and are not asserted to be official policy. Hybrid answers keep database facts separate from document guidance. Governed overflow and collection-priority predictions can feed the dedicated route-planning workflow; unregistered forecasting remains unsupported.
 
 Production analytics credentials should use a dedicated database role with `SELECT` only and no `CREATE`, `INSERT`, `UPDATE`, `DELETE`, `DROP`, or `ALTER` privileges.
 
@@ -317,7 +317,13 @@ curl -X POST http://localhost:8000/api/decisions/recommend \
 
 Additional endpoints are `POST /api/decisions/preview`, `GET /api/decisions/types`, and the development-only `POST /api/decisions/debug`. Debug responses exclude SQL, prompts, embeddings, credentials, document bodies, and provider responses.
 
-Current recommendations are decision support based on historical or latest available records, not predictions. The confidence value measures evidence coverage, authority, completeness, agreement, and recency; it is not the probability that a recommendation is correct. Configured bin thresholds and deterministic truck rules may not be official policies. Synthetic documents receive a source-quality penalty. Prediction providers and route optimization remain disabled future integrations, and mock prediction evidence cannot be enabled in production.
+Current recommendations are decision support. The confidence value measures evidence coverage, authority, completeness, agreement, and recency; it is not the probability that a recommendation is correct. Configured bin thresholds and deterministic truck rules may not be official policies. Synthetic documents receive a source-quality penalty. Mock prediction evidence cannot be enabled in production. Route planning is handled by the dedicated typed workflow rather than free-form decision chat.
+
+## Route optimization and resource allocation
+
+The Route Planning workspace combines current bin loads, governed overflow and priority predictions, bin coordinates, truck capacity and latest availability, attendance-based workforce availability, working hours, and traffic/environment scenario multipliers. A private Google OR-Tools service returns ordered stops, truck and worker requirements, distance, duration, load, fuel estimates, unassigned bins, and resource-loss alternatives.
+
+The GenAI explanation endpoint is grounded only in the stored optimizer result and falls back to deterministic wording if the model is unavailable or introduces an unsupported number. Every output is marked `requires_human_approval=true` and `executes_operations=false`. An authorized manager's approval records review metadata once; it cannot dispatch a truck, name or assign a worker, or change a schedule. See [the optimization architecture](docs/optimization/architecture.md).
 
 Option scores are calculated only in application code as `service impact × 0.30 + urgency × 0.25 + risk control × 0.20 + feasibility × 0.15 + policy alignment × 0.10`. Components are bounded from zero to one. Review/monitoring actions score higher on known feasibility than actions requiring unconfirmed resources. Current official guidance gives policy alignment `1.0`, unknown-authority guidance `0.5`, synthetic guidance `0.25`, and no document guidance is neutral at `0.5` unless document guidance is configured as mandatory.
 

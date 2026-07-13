@@ -16,6 +16,7 @@ import {
   Settings2,
   Sparkles,
   Truck,
+  Route,
   Users,
 } from "lucide-react";
 import { env } from "@/lib/env";
@@ -26,6 +27,7 @@ const primary = [
   ["AI Assistant", "/assistant", Bot, "assistant:use"],
   ["Analytics", "/analytics", Gauge, "analytics:read"],
   ["Decisions", "/decisions", ClipboardCheck, "decisions:request"],
+  ["Route Planning", "/routes", Route, "optimization:request"],
   ["Bins", "/bins", Boxes, "analytics:read"],
   ["Trucks", "/trucks", Truck, "analytics:read"],
   ["Workforce", "/workforce", Users, "analytics:read"],

@@ -43,6 +43,9 @@ jobs:
         working-directory: ml-service
       - run: ../.venv-ml/bin/pytest
         working-directory: ml-service
+      - run: python -m venv .venv-optimization && .venv-optimization/bin/pip install -e "optimization-service[dev]"
+      - run: ../.venv-optimization/bin/ruff check . && ../.venv-optimization/bin/ruff format --check . && ../.venv-optimization/bin/mypy && ../.venv-optimization/bin/pytest
+        working-directory: optimization-service
       - uses: actions/setup-node@v4
         with: {node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json}
       - run: npm ci

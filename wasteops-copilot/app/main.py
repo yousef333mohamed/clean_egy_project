@@ -21,6 +21,7 @@ from app.api.routes import (
     jobs,
     metrics,
     ml,
+    optimization,
     prompts,
     retrieval,
     traces,
@@ -86,3 +87,4 @@ app.include_router(jobs.router, prefix="/api")
 app.include_router(metrics.router)
 app.include_router(ml.router, prefix="/api")
 app.include_router(ml.prediction_router, prefix="/api")
+app.include_router(optimization.router, prefix="/api")

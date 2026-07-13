@@ -20,6 +20,8 @@ class Permission(StrEnum):
     ASSISTANT_USE = "assistant:use"
     DECISIONS_REQUEST = "decisions:request"
     DECISIONS_PREVIEW = "decisions:preview"
+    OPTIMIZATION_REQUEST = "optimization:request"
+    OPTIMIZATION_APPROVE = "optimization:approve"
     DOCUMENTS_READ = "documents:read"
     DOCUMENTS_INGEST = "documents:ingest"
     DOCUMENTS_MANAGE = "documents:manage"

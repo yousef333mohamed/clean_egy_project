@@ -48,7 +48,7 @@ class DecisionRouter:
                 decision_type=DecisionType.UNSUPPORTED_OPTIMIZATION,
                 scope=scope,
                 requires_optimization=True,
-                unsupported_reason="Route optimization is not implemented in this step.",
+                unsupported_reason="Use the dedicated approval-gated Route Planning workflow with explicit bin, truck, depot, and date inputs.",
             )
         if any(term in lowered for term in PREDICTIVE):
             predictive_type = request.decision_type or self._deterministic_type(lowered, scope)
