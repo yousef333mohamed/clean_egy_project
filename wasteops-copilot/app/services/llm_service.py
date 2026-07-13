@@ -120,3 +120,23 @@ class LLMService:
         if not isinstance(parsed, dict):
             raise LLMResponseError("Query rewrite must be a JSON object")
         return parsed
+
+    async def route_analytics(self, *, question: str, tool_catalog: list[dict[str, Any]]) -> dict[str, Any]:
+        """Return a JSON route proposal; orchestration must validate it against the registry."""
+        prompt = load_prompt("analytics_router_prompt.txt").format(
+            question=question,
+            tool_catalog=json.dumps(tool_catalog, ensure_ascii=False, default=str),
+        )
+        content = await self._complete(
+            messages=[{"role": "system", "content": "Return only valid JSON. Never write SQL."}, {"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=700,
+            json_mode=True,
+        )
+        try:
+            parsed = json.loads(content)
+        except json.JSONDecodeError as exc:
+            raise LLMResponseError("Analytics route was not valid JSON") from exc
+        if not isinstance(parsed, dict):
+            raise LLMResponseError("Analytics route must be a JSON object")
+        return parsed

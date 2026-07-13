@@ -1,0 +1,3 @@
+I cannot answer that request through the approved operational analytics tools. {reason}
+
+No arbitrary SQL, database modification, credential access, or future prediction was attempted.

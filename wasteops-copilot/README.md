@@ -233,7 +233,7 @@ curl -X POST http://localhost:8000/api/chat/rag \
 
 Retrieval scores are ranking signals, not calibrated probabilities or confidence percentages. Answers depend entirely on active documents in the knowledge base, and the assistant returns an insufficient-context response instead of inventing missing company procedures. Synthetic documents are demonstration material and are explicitly labelled as non-authoritative.
 
-Text-to-SQL, structured operational-data analysis, optimization, and Data Science integrations are not implemented in this step.
+Text-to-SQL, optimization, and Data Science integrations remain intentionally disabled.
 
 ## Data-model notes
 
@@ -244,3 +244,41 @@ Text-to-SQL, structured operational-data analysis, optimization, and Data Scienc
 - Inspection of all 10,170 attendance rows found `performance_score` values ranging from 0 through 100, supporting its database check constraint.
 - The document vector dimension is read from `VECTOR_DIMENSIONS` by the model. The initial immutable migration creates 1,536-dimensional vectors; changing dimensions requires a new migration.
 - Downgrading removes project tables in dependency order and deliberately preserves the shared `vector` extension.
+
+## Safe structured analytics and hybrid answers
+
+Structured questions are routed to a fixed catalog of read-only analytics tools. The model never receives unrestricted database access, and neither users nor model output can supply SQL, table names, column names, operators, or unregistered metrics. Queries are parameterized, bounded by row limits and timeouts, and database evidence uses `[D#]` citations. Document evidence continues to use `[S#]` citations.
+
+Ask a structured question:
+
+```bash
+python scripts/query_analytics.py --question "Which region had the most complaints in March 2026?"
+```
+
+Ask a hybrid data-plus-procedure question:
+
+```bash
+python scripts/query_analytics.py --question "Which region had the most missed collections, and what procedure applies?" --hybrid
+```
+
+Routing-only mode:
+
+```bash
+python scripts/query_analytics.py --question "Show truck fuel performance" --route-only
+```
+
+API example:
+
+```bash
+curl -X POST http://localhost:8000/api/analytics/query \
+  -H "Content-Type: application/json" \
+  -d '{"question":"Which region had the most missed collections in March 2026?"}'
+```
+
+Development endpoints include `GET /api/analytics/tools`, `POST /api/analytics/tools/{tool_name}`, `POST /api/analytics/query`, `POST /api/analytics/route`, and `POST /api/chat/hybrid`. Tool descriptions never include SQL.
+
+Analytics results describe historical records, not predictions or causal conclusions. Missing measurements are excluded and reported rather than converted to zero. The 80% fill, 20% battery, and truck anomaly multipliers are configured operational rules and are not asserted to be official policy. Hybrid answers keep database facts separate from document guidance. Predictive overflow, optimization, and forecasting remain future Data Science work.
+
+Production analytics credentials should use a dedicated database role with `SELECT` only and no `CREATE`, `INSERT`, `UPDATE`, `DELETE`, `DROP`, or `ALTER` privileges.
+
+Raw SQL remains disabled. A future restricted Text-to-SQL stage would require a schema allowlist, SQL parser, AST validation, read-only enforcement, table and column allowlists, query-cost and row limits, timeouts, and audit logs. The analytics tool registry remains the safer default workflow.

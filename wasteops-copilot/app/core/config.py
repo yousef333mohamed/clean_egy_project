@@ -59,6 +59,17 @@ class Settings(BaseSettings):
     embedding_max_retries: int = Field(default=3, ge=0)
     embedding_timeout_seconds: float = Field(default=60, gt=0)
     enable_document_ingestion_api: bool = True
+    analytics_default_limit: int = Field(default=50, gt=0)
+    analytics_max_limit: int = Field(default=200, gt=0)
+    analytics_query_timeout_seconds: int = Field(default=15, gt=0)
+    analytics_max_date_range_days: int = Field(default=366, gt=0)
+    analytics_allow_raw_sql: bool = False
+    analytics_enable_debug_api: bool = True
+    analytics_enable_explain: bool = False
+    enable_analytics_api: bool = True
+    enable_hybrid_chat_api: bool = True
+    truck_fuel_anomaly_multiplier: float = Field(default=1.5, gt=1)
+    truck_duration_anomaly_multiplier: float = Field(default=1.5, gt=1)
 
     @model_validator(mode="after")
     def validate_document_chunking(self) -> "Settings":
@@ -71,6 +82,8 @@ class Settings(BaseSettings):
             raise ValueError("RETRIEVAL_CANDIDATE_LIMIT must be greater than or equal to RETRIEVAL_TOP_K")
         if abs((self.retrieval_vector_weight + self.retrieval_keyword_weight) - 1.0) > 0.001:
             raise ValueError("RETRIEVAL_VECTOR_WEIGHT and RETRIEVAL_KEYWORD_WEIGHT must add up to 1")
+        if self.analytics_max_limit < self.analytics_default_limit:
+            raise ValueError("ANALYTICS_MAX_LIMIT must be greater than or equal to ANALYTICS_DEFAULT_LIMIT")
         return self
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore", populate_by_name=True)
