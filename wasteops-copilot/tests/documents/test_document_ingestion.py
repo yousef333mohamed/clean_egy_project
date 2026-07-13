@@ -11,6 +11,18 @@ from app.models import DocumentStatus
 
 
 class DryRunSession:
+    def __init__(self) -> None:
+        self.added: list[object] = []
+
+    def add(self, value: object) -> None:
+        self.added.append(value)
+
+    def add_all(self, values: list[object]) -> None:
+        self.added.extend(values)
+
+    async def commit(self) -> None:
+        return None
+
     async def rollback(self) -> None:
         return None
 
@@ -18,6 +30,11 @@ class DryRunSession:
 class ExplodingEmbeddings:
     async def embed_texts(self, _texts: list[str]) -> list[list[float]]:
         raise AssertionError("dry-run or duplicate ingestion must not call embeddings")
+
+
+class FakeEmbeddings:
+    async def embed_texts(self, texts: list[str]) -> list[list[float]]:
+        return [[0.0, 0.0, 0.0] for _ in texts]
 
 
 def settings(documents: Path) -> Settings:
@@ -29,6 +46,7 @@ def settings(documents: Path) -> Settings:
         document_chunk_size=80,
         document_chunk_overlap=10,
         document_min_chunk_size=5,
+        vector_dimensions=3,
     )
 
 
@@ -65,3 +83,34 @@ async def test_duplicate_hash_skips_embedding(tmp_path: Path, monkeypatch: pytes
     assert result.status == DocumentStatus.SKIPPED_DUPLICATE
     assert result.document_id == "existing-id"
     assert result.embeddings_reused == 1
+
+
+@pytest.mark.asyncio
+async def test_changed_path_activates_new_version_only_after_chunks(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    path = tmp_path / "manual.md"
+    path.write_text("# Procedure\n\nInspect TRK-01 and record the result before departure.", encoding="utf-8")
+    session = DryRunSession()
+    service = DocumentIngestionService(session, settings=settings(tmp_path), embedding_service=FakeEmbeddings())
+    previous = SimpleNamespace(document_id="old-id", status=DocumentStatus.COMPLETED, is_active=True, replaced_by_document_id=None)
+
+    async def no_hash(_hash: str) -> None:
+        return None
+
+    async def active(_path: str) -> SimpleNamespace:
+        return previous
+
+    async def no_reuse(_chunks: list[object]) -> dict[str, list[float]]:
+        return {}
+
+    monkeypatch.setattr(service, "_successful_hash", no_hash)
+    monkeypatch.setattr(service, "_active_path", active)
+    monkeypatch.setattr(service, "_reusable_embeddings", no_reuse)
+    result = await service.ingest_document("manual.md")
+    assert result.status == DocumentStatus.COMPLETED
+    assert result.chunks_embedded == result.chunks_created
+    assert previous.status == DocumentStatus.REPLACED
+    assert previous.is_active is False
+    assert previous.replaced_by_document_id == result.document_id
+    stored_chunks = [item for item in session.added if item.__class__.__name__ == "DocumentChunk"]
+    assert stored_chunks
+    assert all(chunk.embedding_dimensions == 3 for chunk in stored_chunks)

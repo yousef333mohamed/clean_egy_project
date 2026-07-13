@@ -3,7 +3,7 @@
 from datetime import date, datetime
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func, text
+from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -20,6 +20,13 @@ class DocumentChunk(Base):
         CheckConstraint("length(btrim(content)) > 0", name="ck_document_chunks_content_not_empty"),
         CheckConstraint("chunk_number >= 0", name="ck_document_chunks_chunk_number_nonnegative"),
         CheckConstraint("token_count > 0", name="ck_document_chunks_token_count_positive"),
+        Index(
+            "ix_document_chunks_embedding_hnsw_cosine",
+            "embedding",
+            postgresql_using="hnsw",
+            postgresql_ops={"embedding": "vector_cosine_ops"},
+            postgresql_with={"m": 16, "ef_construction": 64},
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)

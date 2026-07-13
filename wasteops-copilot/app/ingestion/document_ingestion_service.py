@@ -224,6 +224,7 @@ class DocumentIngestionService:
 
             stage = "embedding"
             reusable = await self._reusable_embeddings(chunks)
+            await self.session.commit()
             missing_hashes = list(dict.fromkeys(chunk.content_hash for chunk in chunks if chunk.content_hash not in reusable))
             if missing_hashes:
                 service = self.embedding_service or EmbeddingService(self.settings)
@@ -363,5 +364,37 @@ class DocumentIngestionService:
         results: list[DocumentIngestionResult] = []
         for document in discover_documents(self.documents_dir, self.settings.document_max_file_size_mb):
             if document.supported:
-                results.append(await self.ingest_document(document.relative_path, force=force, dry_run=dry_run))
+                try:
+                    results.append(await self.ingest_document(document.relative_path, force=force, dry_run=dry_run))
+                except Exception as exc:
+                    logger.exception(
+                        "document_batch_item_failed",
+                        source_filename=document.filename,
+                        relative_path=document.relative_path,
+                        error_type=type(exc).__name__,
+                    )
+                    document_id = str(uuid.uuid4())
+                    report = write_document_failure_report(
+                        self.rejected_dir,
+                        source_filename=document.filename,
+                        relative_path=document.relative_path,
+                        document_id=document_id,
+                        error_type=type(exc).__name__,
+                        error_message="Document could not be started",
+                        warnings=[],
+                        stage="discovery",
+                    )
+                    results.append(
+                        self._result(
+                            document_id=document_id,
+                            source_filename=document.filename,
+                            relative_path=document.relative_path,
+                            status=DocumentStatus.FAILED,
+                            dry_run=dry_run,
+                            file_size_bytes=document.size_bytes,
+                            started_at=datetime.now(UTC),
+                            failure_report=report,
+                            error_message="Document could not be started",
+                        )
+                    )
         return results

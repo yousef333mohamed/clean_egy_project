@@ -34,10 +34,11 @@ class KnowledgeDocument(Base):
     __table_args__ = (
         Index("ix_knowledge_documents_file_hash", "file_hash"),
         Index("ix_knowledge_documents_relative_path", "original_path"),
+        Index("ix_knowledge_documents_document_id", "document_id"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    document_id: Mapped[str] = mapped_column(String(36), unique=True, nullable=False, index=True)
+    document_id: Mapped[str] = mapped_column(String(36), unique=True, nullable=False)
     source_filename: Mapped[str] = mapped_column(String(255), nullable=False)
     original_path: Mapped[str] = mapped_column(String(1024), nullable=False)
     file_extension: Mapped[str] = mapped_column(String(10), nullable=False)

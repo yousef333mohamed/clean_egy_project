@@ -70,6 +70,9 @@ def test_document_embedding_uses_configured_vector_type() -> None:
     assert isinstance(vector_type, Vector)
     assert vector_type.dim == 1536
     assert inspect(KnowledgeDocument).relationships.chunks.back_populates == "document"
+    index = next(index for index in DocumentChunk.__table__.indexes if index.name == "ix_document_chunks_embedding_hnsw_cosine")
+    assert index.dialect_options["postgresql"]["using"] == "hnsw"
+    assert index.dialect_options["postgresql"]["ops"] == {"embedding": "vector_cosine_ops"}
 
 
 def test_relationships_have_back_populates_and_async_loading() -> None:

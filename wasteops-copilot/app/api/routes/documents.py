@@ -33,7 +33,7 @@ def _require_enabled(settings: Settings) -> None:
 
 
 def _path_error(exc: DocumentPathError) -> HTTPException:
-    code = status.HTTP_404_NOT_FOUND if "not found" in str(exc).lower() else status.HTTP_422_UNPROCESSABLE_ENTITY
+    code = status.HTTP_404_NOT_FOUND if "not found" in str(exc).lower() else status.HTTP_422_UNPROCESSABLE_CONTENT
     return HTTPException(status_code=code, detail=str(exc))
 
 

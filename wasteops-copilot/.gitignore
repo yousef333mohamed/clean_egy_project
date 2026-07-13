@@ -12,3 +12,5 @@ data/processed/*
 !data/processed/.gitkeep
 data/documents/*
 !data/documents/.gitkeep
+!data/documents/samples/
+!data/documents/samples/*.md

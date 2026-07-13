@@ -52,7 +52,21 @@ def discover_documents(documents_dir: Path, max_file_size_mb: int) -> list[Disco
         if _ignored(candidate, root):
             continue
         relative = candidate.relative_to(root).as_posix()
-        resolved = candidate.resolve()
+        try:
+            resolved = candidate.resolve(strict=True)
+        except OSError:
+            results.append(
+                DiscoveredDocument(
+                    candidate.name,
+                    relative,
+                    candidate.suffix.lower(),
+                    0,
+                    datetime.now(UTC),
+                    False,
+                    "file or symbolic-link target is unavailable",
+                )
+            )
+            continue
         try:
             resolved.relative_to(root)
         except ValueError:

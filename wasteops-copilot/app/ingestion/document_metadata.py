@@ -18,6 +18,13 @@ def load_document_metadata(path: Path, *, strict: bool = False) -> DocumentMetad
     if not sidecar.exists():
         return DocumentMetadata()
     try:
+        if sidecar.resolve(strict=True).parent != path.parent.resolve(strict=True):
+            raise DocumentMetadataError("Metadata sidecar must remain beside its document")
+        if sidecar.stat().st_size > 1024 * 1024:
+            raise DocumentMetadataError("Metadata sidecar exceeds the 1 MB safety limit")
+    except OSError as exc:
+        raise DocumentMetadataError("Metadata sidecar is unavailable") from exc
+    try:
         payload = json.loads(sidecar.read_text(encoding="utf-8-sig"))
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise DocumentMetadataError("Metadata sidecar is not valid UTF-8 JSON") from exc
