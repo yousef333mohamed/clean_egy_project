@@ -18,6 +18,7 @@ from app.models.truck_trip_log import TruckTripLog
 from app.models.worker import Worker
 from app.models.workforce_attendance import WorkforceAttendance
 from app.models.user_feedback import FeedbackType, UserFeedback
+from app.audit.models import AuditEvent
 
 __all__ = [
     "Base",
@@ -43,4 +44,5 @@ __all__ = [
     "WorkforceAttendance",
     "FeedbackType",
     "UserFeedback",
+    "AuditEvent",
 ]

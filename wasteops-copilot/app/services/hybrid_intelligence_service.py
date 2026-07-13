@@ -121,8 +121,9 @@ class HybridIntelligenceService:
         resolved = await self.prompt_registry.get_active_prompt("hybrid_answer")
         prompt = resolved.content.format(question=request.question, evidence=combined)
         generation_started = time.perf_counter()
-        answer = await self.llm_service.generate_grounded_answer(system_prompt="Keep D and S evidence namespaces separate.", user_prompt=prompt,
-            prompt_key=resolved.prompt_key, prompt_version=resolved.version)
+        answer = await self.llm_service.generate_grounded_answer(
+            system_prompt="Keep D and S evidence namespaces separate.", user_prompt=prompt, prompt_key=resolved.prompt_key, prompt_version=resolved.version
+        )
         generation_duration = time.perf_counter() - generation_started
         document_citations = context.citations if context else []
         validation = self.citation_builder.validate_answer_citations(answer, document_citations)

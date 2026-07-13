@@ -5,9 +5,7 @@ from app.schemas.evaluation import QualityGateFailure, QualityGateResult
 
 
 class QualityGate:
-    REQUIRED_METRICS = (
-        "retrieval_recall_at_5", "citation_validity", "route_accuracy", "tool_accuracy", "groundedness", "numeric_error_rate"
-    )
+    REQUIRED_METRICS = ("retrieval_recall_at_5", "citation_validity", "route_accuracy", "tool_accuracy", "groundedness", "numeric_error_rate")
 
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or get_settings()

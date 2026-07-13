@@ -29,7 +29,15 @@ class LLMResponseError(LLMError):
 class LLMService:
     """Return plain text and validated rewrite JSON, never provider objects."""
 
-    def __init__(self, settings: Settings | None = None, *, client: Any | None = None, sleep: Any = asyncio.sleep, prompt_registry: PromptRegistry | None = None, tracer: Tracer | None = None) -> None:
+    def __init__(
+        self,
+        settings: Settings | None = None,
+        *,
+        client: Any | None = None,
+        sleep: Any = asyncio.sleep,
+        prompt_registry: PromptRegistry | None = None,
+        tracer: Tracer | None = None,
+    ) -> None:
         self.settings = settings or get_settings()
         if client is None:
             if not self.settings.llm_api_key:
@@ -45,9 +53,21 @@ class LLMService:
         self.prompt_registry = prompt_registry or PromptRegistry()
         self.tracer = tracer or Tracer(settings=self.settings)
 
-    async def _complete(self, *, messages: list[dict[str, str]], temperature: float, max_tokens: int, json_mode: bool = False, prompt_key: str | None = None, prompt_version: str | None = None) -> str:
+    async def _complete(
+        self,
+        *,
+        messages: list[dict[str, str]],
+        temperature: float,
+        max_tokens: int,
+        json_mode: bool = False,
+        prompt_key: str | None = None,
+        prompt_version: str | None = None,
+    ) -> str:
         last_error: Exception | None = None
-        async with self.tracer.span("LLM_GENERATION", {"provider": "openai-compatible", "model": self.settings.chat_model_name, "prompt_key": prompt_key, "prompt_version": prompt_version}) as span:
+        async with self.tracer.span(
+            "LLM_GENERATION",
+            {"provider": "openai-compatible", "model": self.settings.chat_model_name, "prompt_key": prompt_key, "prompt_version": prompt_version},
+        ) as span:
             for attempt in range(self.settings.llm_max_retries + 1):
                 try:
                     logger.info(

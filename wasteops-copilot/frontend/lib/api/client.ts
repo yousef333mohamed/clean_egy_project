@@ -33,7 +33,9 @@ export async function apiRequest<T>(
   try {
     for (let attempt = 0; attempt < attempts; attempt += 1) {
       try {
-        const response = await fetch(`${env.NEXT_PUBLIC_API_BASE_URL}${path}`, {
+        const baseUrl = env.NEXT_PUBLIC_AUTH_ENABLED ? "/api/backend" : env.NEXT_PUBLIC_API_BASE_URL;
+        const backendPath = env.NEXT_PUBLIC_AUTH_ENABLED && path.startsWith("/api/") ? path.slice(4) : path;
+        const response = await fetch(`${baseUrl}${backendPath}`, {
           ...options,
           body:
             options.body === undefined

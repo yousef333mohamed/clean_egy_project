@@ -19,5 +19,15 @@ class AnalyticsEvaluator:
         metrics = {key: value for result in results for key, value in result.metrics.items()}
         metrics.update(domain_accuracy=float(domain_ok), metric_accuracy=float(metric_ok), filter_accuracy=float(filter_ok), date_range_accuracy=float(date_ok))
         checks = all((domain_ok, metric_ok, filter_ok, date_ok)) and all(result.passed for result in results)
-        reasons = [reason for result in results for reason in result.failure_reasons] + [f"Analytics check failed: {name}" for name, ok in (("domain", domain_ok), ("metric", metric_ok), ("filter", filter_ok), ("date_range", date_ok)) if not ok]
-        return EvaluatorResult(passed=checks, score=sum(metrics.values()) / len(metrics), metrics=metrics, failure_reasons=reasons, critical=any(result.critical for result in results))
+        reasons = [reason for result in results for reason in result.failure_reasons] + [
+            f"Analytics check failed: {name}"
+            for name, ok in (("domain", domain_ok), ("metric", metric_ok), ("filter", filter_ok), ("date_range", date_ok))
+            if not ok
+        ]
+        return EvaluatorResult(
+            passed=checks,
+            score=sum(metrics.values()) / len(metrics),
+            metrics=metrics,
+            failure_reasons=reasons,
+            critical=any(result.critical for result in results),
+        )

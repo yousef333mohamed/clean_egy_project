@@ -11,13 +11,14 @@ from app.analytics.parameter_parser import AnalyticsParameterError
 from app.analytics.query_executor import AnalyticsDatabaseError
 from app.analytics.tool_registry import UnknownAnalyticsTool, build_tool_registry
 from app.api.dependencies import DatabaseSession
+from app.auth.dependencies import require_permission
 from app.core.config import Settings, get_settings
 from app.schemas.analytics import AnalyticsQueryRequest, AnalyticsResponse, AnalyticsRouteDecision
 from app.schemas.analytics_tools import AnalyticsToolRequest
 from app.schemas.operational_evidence import OperationalEvidence
 from app.services.llm_service import LLMError
 
-router = APIRouter(prefix="/analytics", tags=["analytics"])
+router = APIRouter(prefix="/analytics", tags=["analytics"], dependencies=[Depends(require_permission("analytics:read"))])
 AppSettings = Annotated[Settings, Depends(get_settings)]
 
 

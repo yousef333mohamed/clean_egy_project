@@ -1,13 +1,13 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
-import { CircleUserRound, Database, Moon, Server, Sun } from "lucide-react";
-import { getDatabaseHealth, getHealth } from "@/lib/api/health";
+import { CircleUserRound, Database, LogOut, Moon, Server, Sun } from "lucide-react";
+import { getDatabaseHealth, getHealth, getVersion } from "@/lib/api/health";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumbs } from "./breadcrumbs";
 import { MobileNavigation } from "./mobile-navigation";
-export function AppHeader() {
+export function AppHeader({ displayName, permissions }: { displayName?: string; permissions?: string[] }) {
   const backend = useQuery({
     queryKey: ["health"],
     queryFn: ({ signal }) => getHealth(signal),
@@ -20,6 +20,12 @@ export function AppHeader() {
     enabled: backend.isSuccess,
     staleTime: 30_000,
     refetchInterval: 60_000,
+  });
+  const release = useQuery({
+    queryKey: ["release-version"],
+    queryFn: ({ signal }) => getVersion(signal),
+    enabled: backend.isSuccess,
+    staleTime: Number.POSITIVE_INFINITY,
   });
   const { resolvedTheme, setTheme } = useTheme();
   const state = backend.isPending
@@ -34,10 +40,11 @@ export function AppHeader() {
   return (
     <header className="bg-background/95 sticky top-0 z-30 flex h-16 items-center justify-between border-b px-4 backdrop-blur md:px-6">
       <div className="flex items-center gap-3">
-        <MobileNavigation />
+        <MobileNavigation permissions={permissions} />
         <Breadcrumbs />
       </div>
       <div className="flex items-center gap-2">
+        {release.data ? <span className="text-muted-foreground hidden text-xs xl:inline" title={`Commit ${release.data.commit_sha} · built ${release.data.build_time}`}>v{release.data.version}</span> : null}
         <Badge aria-live="polite" className="gap-1.5">
           <span
             className={
@@ -68,14 +75,8 @@ export function AppHeader() {
             <Moon className="size-4" />
           )}
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Future user menu"
-          title="Authentication will be added later"
-        >
-          <CircleUserRound className="size-5" />
-        </Button>
+        {displayName ? <span className="hidden text-sm md:inline"><CircleUserRound className="me-1 inline size-4" />{displayName}</span> : null}
+        {displayName ? <Button asChild variant="ghost" size="icon"><a href="/auth/signout" aria-label="Sign out"><LogOut className="size-4" /></a></Button> : null}
       </div>
     </header>
   );

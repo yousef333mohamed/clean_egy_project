@@ -18,7 +18,9 @@ logger = get_logger(__name__)
 class RAGService:
     """Generate answers only from retrieved, delimited, citation-mapped evidence."""
 
-    def __init__(self, retrieval_service, context_builder, llm_service, settings: Settings | None = None, prompt_registry: PromptRegistry | None = None) -> None:
+    def __init__(
+        self, retrieval_service, context_builder, llm_service, settings: Settings | None = None, prompt_registry: PromptRegistry | None = None
+    ) -> None:
         self.retrieval_service = retrieval_service
         self.context_builder = context_builder
         self.llm_service = llm_service
@@ -99,7 +101,9 @@ class RAGService:
         system_prompt = system_resolved.content
         user_prompt = answer_resolved.content.format(question=retrieval.query, context=context.context_text)
         generation_started = time.perf_counter()
-        answer = await self.llm_service.generate_grounded_answer(system_prompt=system_prompt, user_prompt=user_prompt, prompt_key=answer_resolved.prompt_key, prompt_version=answer_resolved.version)
+        answer = await self.llm_service.generate_grounded_answer(
+            system_prompt=system_prompt, user_prompt=user_prompt, prompt_key=answer_resolved.prompt_key, prompt_version=answer_resolved.version
+        )
         generation_duration = time.perf_counter() - generation_started
         validation = self.citation_builder.validate_answer_citations(answer, context.citations)
         warnings.extend(validation.warnings)

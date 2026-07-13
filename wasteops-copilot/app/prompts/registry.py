@@ -60,8 +60,13 @@ class PromptRegistry:
         if existing.scalar_one_or_none() is not None:
             raise ValueError("Prompt version already exists")
         record = PromptVersion(
-            prompt_key=prompt_key, version=version, content=content, content_hash=content_hash(content), description=description,
-            created_by=created_by, status=PromptStatus.DRAFT,
+            prompt_key=prompt_key,
+            version=version,
+            content=content,
+            content_hash=content_hash(content),
+            description=description,
+            created_by=created_by,
+            status=PromptStatus.DRAFT,
         )
         self.session.add(record)
         await self.session.flush()
@@ -114,7 +119,9 @@ class PromptRegistry:
     async def restore_version(self, prompt_key: str, version: str) -> PromptVersion:
         if self.session is None:
             raise RuntimeError("A database session is required to restore prompt versions")
-        result = await self.session.execute(select(PromptVersion).where(PromptVersion.prompt_key == validate_prompt_key(prompt_key), PromptVersion.version == version))
+        result = await self.session.execute(
+            select(PromptVersion).where(PromptVersion.prompt_key == validate_prompt_key(prompt_key), PromptVersion.version == version)
+        )
         record = result.scalar_one_or_none()
         if record is None or record.status != PromptStatus.ARCHIVED:
             raise PromptNotFoundError("Archived prompt version not found")

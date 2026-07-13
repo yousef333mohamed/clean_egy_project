@@ -1,0 +1,20 @@
+name: deploy-production
+on: { workflow_dispatch: { inputs: { image_tag: { description: "Tested immutable commit SHA", required: true } } } }
+permissions: { contents: read }
+jobs:
+  verify-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm release evidence
+        env:
+          BACKUP_CONFIRMED: "${{ vars.BACKUP_CONFIRMED }}"
+          QUALITY_GATE_CONFIRMED: "${{ vars.QUALITY_GATE_CONFIRMED }}"
+        run: test "$BACKUP_CONFIRMED" = true && test "$QUALITY_GATE_CONFIRMED" = true
+      - name: Deploy immutable release through approved production runner
+        env:
+          DEPLOY_COMMAND: "${{ secrets.PRODUCTION_DEPLOY_COMMAND }}"
+          IMAGE_TAG: "${{ inputs.image_tag }}"
+        run: test -n "$DEPLOY_COMMAND" && "$DEPLOY_COMMAND" "$IMAGE_TAG"
+      - run: python scripts/smoke_test.py --base-url "${{ vars.PRODUCTION_URL }}"

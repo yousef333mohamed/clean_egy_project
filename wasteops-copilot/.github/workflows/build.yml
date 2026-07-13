@@ -1,0 +1,27 @@
+name: build-images
+on:
+  push: { branches: [main], tags: ["v*"] }
+  workflow_dispatch: {}
+permissions: { contents: read, packages: write }
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - {name: backend, file: deployment/docker/backend.Dockerfile, build_args: ""}
+          - {name: worker, file: deployment/docker/worker.Dockerfile, build_args: ""}
+          - {name: frontend, file: deployment/docker/frontend.Dockerfile, build_args: "NEXT_PUBLIC_APP_NAME=WasteOps Decision Intelligence Copilot\nNEXT_PUBLIC_API_BASE_URL=https://wasteops.invalid\nNEXT_PUBLIC_APP_ENV=production\nNEXT_PUBLIC_AUTH_ENABLED=true"}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with: { registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}" }
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: "${{ matrix.file }}"
+          push: true
+          tags: "ghcr.io/${{ github.repository_owner }}/wasteops-${{ matrix.name }}:${{ github.sha }}"
+          labels: "org.opencontainers.image.revision=${{ github.sha }},org.opencontainers.image.version=${{ github.ref_name }}"
+          build-args: "${{ matrix.build_args }}"

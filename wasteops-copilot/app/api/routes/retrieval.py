@@ -5,13 +5,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.dependencies import DatabaseSession
+from app.auth.dependencies import require_permission
 from app.core.config import Settings, get_settings
 from app.retrieval.factory import build_retrieval_service
 from app.retrieval.query_processor import QueryProcessingError
 from app.schemas.retrieval import RetrievalRequest, RetrievalResponse
 from app.services.embedding_service import EmbeddingError
 
-router = APIRouter(prefix="/retrieval", tags=["retrieval"])
+router = APIRouter(prefix="/retrieval", tags=["retrieval"], dependencies=[Depends(require_permission("assistant:use"))])
 AppSettings = Annotated[Settings, Depends(get_settings)]
 
 
@@ -26,7 +27,7 @@ async def search(request: RetrievalRequest, session: DatabaseSession, settings: 
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
     except EmbeddingError as exc:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Embedding provider unavailable") from exc
-    allow_content = request.include_content and (settings.app_environment != "production" or settings.retrieval_allow_production_content)
+    allow_content = request.include_content and (settings.app_environment not in {"production", "staging"} or settings.retrieval_allow_production_content)
     if not allow_content:
         response.evidence = [item.model_copy(update={"content": None}) for item in response.evidence]
     if not request.debug:

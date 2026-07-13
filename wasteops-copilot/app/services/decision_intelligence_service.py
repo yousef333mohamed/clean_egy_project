@@ -161,8 +161,10 @@ class DecisionIntelligenceService:
             evidence=json.dumps([item.model_dump(mode="json") for item in collected.evidence], ensure_ascii=False),
         )
         answer = await self.llm_service.generate_grounded_answer(
-            system_prompt="Explain the fixed deterministic result only. Do not create actions or scores.", user_prompt=prompt,
-            prompt_key=resolved.prompt_key, prompt_version=resolved.version,
+            system_prompt="Explain the fixed deterministic result only. Do not create actions or scores.",
+            user_prompt=prompt,
+            prompt_key=resolved.prompt_key,
+            prompt_version=resolved.version,
         )
         valid_ids = {item.evidence_id for item in collected.evidence}
         invalid = set(CITATION.findall(answer)) - valid_ids

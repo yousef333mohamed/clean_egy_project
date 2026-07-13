@@ -18,11 +18,17 @@ async def seed() -> int:
             path = TEMPLATE_DIR / f"{key}.v1.txt"
             if not path.is_file():
                 continue
-            exists = (await session.execute(select(PromptVersion).where(PromptVersion.prompt_key == key, PromptVersion.version == FILE_VERSION))).scalar_one_or_none()
+            exists = (
+                await session.execute(select(PromptVersion).where(PromptVersion.prompt_key == key, PromptVersion.version == FILE_VERSION))
+            ).scalar_one_or_none()
             if exists is None:
-                await registry.create_version(key, FILE_VERSION, path.read_text(encoding="utf-8"), description="Seeded project prompt", created_by="seed_prompt_versions")
+                await registry.create_version(
+                    key, FILE_VERSION, path.read_text(encoding="utf-8"), description="Seeded project prompt", created_by="seed_prompt_versions"
+                )
                 created += 1
-            active = (await session.execute(select(PromptVersion).where(PromptVersion.prompt_key == key, PromptVersion.status == PromptStatus.ACTIVE))).scalar_one_or_none()
+            active = (
+                await session.execute(select(PromptVersion).where(PromptVersion.prompt_key == key, PromptVersion.status == PromptStatus.ACTIVE))
+            ).scalar_one_or_none()
             if active is None:
                 await registry.activate_version(key, FILE_VERSION)
         await session.commit()

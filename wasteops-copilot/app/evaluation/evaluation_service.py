@@ -19,7 +19,10 @@ class EvaluationService:
         self.settings = settings
 
     def datasets(self) -> list[dict[str, str]]:
-        return [{"name": path.stem, "type": path.parent.name, "path": str(path.relative_to(DATASET_ROOT)), "version": "1.0.0"} for path in sorted(DATASET_ROOT.glob("*/*.json"))]
+        return [
+            {"name": path.stem, "type": path.parent.name, "path": str(path.relative_to(DATASET_ROOT)), "version": "1.0.0"}
+            for path in sorted(DATASET_ROOT.glob("*/*.json"))
+        ]
 
     def resolve_dataset(self, name: str) -> Path:
         safe = Path(name).name
@@ -35,7 +38,11 @@ class EvaluationService:
         return (await self.session.execute(select(EvaluationRun).where(EvaluationRun.id == run_id))).scalar_one_or_none()
 
     async def get_results(self, run_id: UUID):
-        return list((await self.session.execute(select(EvaluationResult).where(EvaluationResult.evaluation_run_id == run_id).order_by(EvaluationResult.created_at))).scalars())
+        return list(
+            (
+                await self.session.execute(select(EvaluationResult).where(EvaluationResult.evaluation_run_id == run_id).order_by(EvaluationResult.created_at))
+            ).scalars()
+        )
 
     async def compare(self, baseline_id: UUID, candidate_id: UUID) -> dict:
         baseline, candidate = await self.get_run(baseline_id), await self.get_run(candidate_id)
@@ -45,8 +52,13 @@ class EvaluationService:
         deltas = {key: float(candidate.metrics_json.get(key, 0)) - float(baseline.metrics_json.get(key, 0)) for key in keys}
         baseline_results = {item.case_id: item.status for item in await self.get_results(baseline_id)}
         candidate_results = {item.case_id: item.status for item in await self.get_results(candidate_id)}
-        return {"baseline": str(baseline_id), "candidate": str(candidate_id), "metric_deltas": deltas,
-            "improvements": sorted(key for key, value in deltas.items() if value > 0), "regressions": sorted(key for key, value in deltas.items() if value < 0),
+        return {
+            "baseline": str(baseline_id),
+            "candidate": str(candidate_id),
+            "metric_deltas": deltas,
+            "improvements": sorted(key for key, value in deltas.items() if value > 0),
+            "regressions": sorted(key for key, value in deltas.items() if value < 0),
             "newly_failing_cases": sorted(key for key, value in candidate_results.items() if value == "FAILED" and baseline_results.get(key) == "PASSED"),
             "newly_passing_cases": sorted(key for key, value in candidate_results.items() if value == "PASSED" and baseline_results.get(key) == "FAILED"),
-            "critical_failure_delta": candidate.critical_failures - baseline.critical_failures}
+            "critical_failure_delta": candidate.critical_failures - baseline.critical_failures,
+        }

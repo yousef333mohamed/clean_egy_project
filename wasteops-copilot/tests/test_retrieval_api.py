@@ -57,7 +57,7 @@ def test_production_response_omits_content_and_embeddings(monkeypatch) -> None:
             )
 
     monkeypatch.setattr(route, "build_retrieval_service", lambda *_args: Service())
-    app.dependency_overrides[get_settings] = lambda: settings(environment="production")
+    app.dependency_overrides[get_settings] = lambda: settings(environment="staging")
     try:
         response = TestClient(app).post(
             "/api/retrieval/search",

@@ -5,6 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.dependencies import DatabaseSession
+from app.auth.dependencies import require_permission
 from app.core.config import Settings, get_settings
 from app.retrieval.factory import build_rag_service
 from app.analytics.factory import build_hybrid_service
@@ -15,7 +16,7 @@ from app.schemas.hybrid_answer import HybridQuestionRequest, HybridQuestionRespo
 from app.services.embedding_service import EmbeddingError
 from app.services.llm_service import LLMError
 
-router = APIRouter(prefix="/chat", tags=["chat"])
+router = APIRouter(prefix="/chat", tags=["chat"], dependencies=[Depends(require_permission("assistant:use"))])
 AppSettings = Annotated[Settings, Depends(get_settings)]
 
 

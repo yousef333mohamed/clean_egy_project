@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func, select
 
 from app.api.dependencies import DatabaseSession
+from app.auth.dependencies import require_permission
 from app.core.config import Settings, get_settings
 from app.models.user_feedback import UserFeedback
 from app.observability.sanitization import sanitize_text
@@ -20,19 +21,23 @@ def _enabled(settings: Settings) -> None:
         raise HTTPException(status_code=403, detail="Feedback API is disabled")
 
 
-@router.post("", response_model=FeedbackCreated, status_code=201)
+@router.post("", response_model=FeedbackCreated, status_code=201, dependencies=[Depends(require_permission("feedback:create"))])
 async def submit_feedback(request: FeedbackCreate, session: DatabaseSession, settings: AppSettings):
     _enabled(settings)
-    record = UserFeedback(request_id=request.request_id, rating=request.rating, feedback_type=request.feedback_type,
+    record = UserFeedback(
+        request_id=request.request_id,
+        rating=request.rating,
+        feedback_type=request.feedback_type,
         comment=sanitize_text(request.comment, max_length=2000, reject_html=True) if request.comment else None,
-        expected_answer=sanitize_text(request.expected_answer, max_length=2000, reject_html=True) if request.expected_answer else None)
+        expected_answer=sanitize_text(request.expected_answer, max_length=2000, reject_html=True) if request.expected_answer else None,
+    )
     session.add(record)
     await session.commit()
     await session.refresh(record)
     return record
 
 
-@router.get("/summary", response_model=FeedbackSummary)
+@router.get("/summary", response_model=FeedbackSummary, dependencies=[Depends(require_permission("feedback:read"))])
 async def feedback_summary(session: DatabaseSession, settings: AppSettings):
     _enabled(settings)
     total = (await session.execute(select(func.count(UserFeedback.id)))).scalar_one()

@@ -6,12 +6,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.dependencies import DatabaseSession
+from app.auth.dependencies import require_permission
 from app.core.config import Settings, get_settings
 from app.evaluation.evaluation_service import EvaluationService
 from app.evaluation.quality_gate import QualityGate
 from app.schemas.evaluation import CompareRunsRequest, StartEvaluationRequest
 
-router = APIRouter(prefix="/evaluation", tags=["evaluation"])
+router = APIRouter(prefix="/evaluation", tags=["evaluation"], dependencies=[Depends(require_permission("evaluations:read"))])
 AppSettings = Annotated[Settings, Depends(get_settings)]
 
 
@@ -21,10 +22,22 @@ def _enabled(settings: Settings) -> None:
 
 
 def _run_summary(run) -> dict:
-    return {"id": str(run.id), "name": run.name, "evaluation_type": run.evaluation_type, "status": run.status,
-        "dataset_name": run.dataset_name, "dataset_version": run.dataset_version, "started_at": run.started_at, "completed_at": run.completed_at,
-        "total_cases": run.total_cases, "passed_cases": run.passed_cases, "failed_cases": run.failed_cases,
-        "critical_failures": run.critical_failures, "metrics": run.metrics_json, "prompt_versions": run.prompt_versions_json}
+    return {
+        "id": str(run.id),
+        "name": run.name,
+        "evaluation_type": run.evaluation_type,
+        "status": run.status,
+        "dataset_name": run.dataset_name,
+        "dataset_version": run.dataset_version,
+        "started_at": run.started_at,
+        "completed_at": run.completed_at,
+        "total_cases": run.total_cases,
+        "passed_cases": run.passed_cases,
+        "failed_cases": run.failed_cases,
+        "critical_failures": run.critical_failures,
+        "metrics": run.metrics_json,
+        "prompt_versions": run.prompt_versions_json,
+    }
 
 
 @router.get("/datasets")
@@ -33,7 +46,7 @@ async def list_datasets(session: DatabaseSession, settings: AppSettings):
     return EvaluationService(session, settings).datasets()
 
 
-@router.post("/runs", status_code=201)
+@router.post("/runs", status_code=201, dependencies=[Depends(require_permission("evaluations:run"))])
 async def start_run(request: StartEvaluationRequest, session: DatabaseSession, settings: AppSettings):
     _enabled(settings)
     try:
@@ -56,8 +69,18 @@ async def read_run(run_id: UUID, session: DatabaseSession, settings: AppSettings
 async def list_results(run_id: UUID, session: DatabaseSession, settings: AppSettings):
     _enabled(settings)
     results = await EvaluationService(session, settings).get_results(run_id)
-    return [{"case_id": item.case_id, "category": item.category, "status": item.status, "metrics": item.metrics_json,
-        "warnings": item.warnings_json, "failure_reasons": item.failure_reasons_json, "duration_ms": item.duration_ms} for item in results]
+    return [
+        {
+            "case_id": item.case_id,
+            "category": item.category,
+            "status": item.status,
+            "metrics": item.metrics_json,
+            "warnings": item.warnings_json,
+            "failure_reasons": item.failure_reasons_json,
+            "duration_ms": item.duration_ms,
+        }
+        for item in results
+    ]
 
 
 @router.get("/runs/{run_id}/quality-gate")
@@ -69,7 +92,7 @@ async def quality_gate(run_id: UUID, session: DatabaseSession, settings: AppSett
     return QualityGate(settings).evaluate(run.metrics_json, total_cases=run.total_cases, critical_failures=run.critical_failures)
 
 
-@router.post("/compare")
+@router.post("/compare", dependencies=[Depends(require_permission("evaluations:run"))])
 async def compare_runs(request: CompareRunsRequest, session: DatabaseSession, settings: AppSettings):
     _enabled(settings)
     try:

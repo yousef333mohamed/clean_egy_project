@@ -1,0 +1,4 @@
+GRANT USAGE ON SCHEMA public TO wasteops_analytics;
+GRANT SELECT ON operational_daily, environmental_daily, smart_bins, smart_bin_readings, trucks, truck_trip_logs, workers, workforce_attendance TO wasteops_analytics;
+ALTER ROLE wasteops_analytics SET default_transaction_read_only = on;
+ALTER ROLE wasteops_analytics SET statement_timeout = '15s';

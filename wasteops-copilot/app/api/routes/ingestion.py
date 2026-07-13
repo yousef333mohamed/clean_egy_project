@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 
 from app.api.dependencies import DatabaseSession
+from app.auth.dependencies import require_permission
 from app.core.config import Settings, get_settings
 from app.ingestion.file_discovery import discover_files
 from app.ingestion.ingestion_service import IngestionService
@@ -22,7 +23,7 @@ from app.schemas.ingestion import (
     IngestionRunResponse,
 )
 
-router = APIRouter(prefix="/ingestion", tags=["ingestion"])
+router = APIRouter(prefix="/ingestion", tags=["ingestion"], dependencies=[Depends(require_permission("datasets:read"))])
 AppSettings = Annotated[Settings, Depends(get_settings)]
 
 
@@ -50,7 +51,7 @@ async def list_files(settings: AppSettings) -> list[DiscoveredFileResponse]:
     ]
 
 
-@router.post("/validate/{dataset_name}", response_model=IngestionResult)
+@router.post("/validate/{dataset_name}", response_model=IngestionResult, dependencies=[Depends(require_permission("datasets:validate"))])
 async def validate_dataset(dataset_name: str, session: DatabaseSession, settings: AppSettings) -> IngestionResult:
     """Run full validation without inserting source records."""
     _require_enabled(settings)
@@ -61,7 +62,7 @@ async def validate_dataset(dataset_name: str, session: DatabaseSession, settings
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)) from exc
 
 
-@router.post("/csv/{dataset_name}", response_model=IngestionResult)
+@router.post("/csv/{dataset_name}", response_model=IngestionResult, dependencies=[Depends(require_permission("datasets:ingest"))])
 async def ingest_dataset(dataset_name: str, request: IngestionRequest, session: DatabaseSession, settings: AppSettings) -> IngestionResult:
     """Ingest one allow-listed dataset."""
     _require_enabled(settings)
@@ -75,7 +76,7 @@ async def ingest_dataset(dataset_name: str, request: IngestionRequest, session: 
     return result
 
 
-@router.post("/csv", response_model=list[IngestionResult])
+@router.post("/csv", response_model=list[IngestionResult], dependencies=[Depends(require_permission("datasets:ingest"))])
 async def ingest_all(request: IngestAllRequest, session: DatabaseSession, settings: AppSettings) -> list[IngestionResult]:
     """Ingest every available source in dependency order."""
     _require_enabled(settings)

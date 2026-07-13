@@ -6,6 +6,12 @@ export const healthSchema = z.object({
   environment: z.string().optional(),
   database: z.string().optional(),
 });
+export const versionSchema = z.object({
+  version: z.string(),
+  commit_sha: z.string(),
+  build_time: z.string(),
+  environment: z.string(),
+});
 export const dataPeriodSchema = z.object({
   start: z.string().nullable(),
   end: z.string().nullable(),

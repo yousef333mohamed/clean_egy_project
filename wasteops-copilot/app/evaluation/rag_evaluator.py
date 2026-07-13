@@ -36,4 +36,11 @@ class RAGEvaluator:
         from app.schemas.evaluation import EvaluatorResult
 
         deterministic_checks = (grounded, synthetic_ok, unknown_ok, identifiers_ok)
-        return EvaluatorResult(passed=all(result.passed for result in results) and all(deterministic_checks), score=(sum(result.score for result in results) + sum(deterministic_checks)) / (len(results) + len(deterministic_checks)), metrics=metrics, failure_reasons=reasons, warnings=[warning for result in results for warning in result.warnings], critical=any(result.critical for result in results))
+        return EvaluatorResult(
+            passed=all(result.passed for result in results) and all(deterministic_checks),
+            score=(sum(result.score for result in results) + sum(deterministic_checks)) / (len(results) + len(deterministic_checks)),
+            metrics=metrics,
+            failure_reasons=reasons,
+            warnings=[warning for result in results for warning in result.warnings],
+            critical=any(result.critical for result in results),
+        )

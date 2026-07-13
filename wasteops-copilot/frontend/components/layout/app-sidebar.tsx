@@ -21,39 +21,43 @@ import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
 
 const primary = [
-  ["Overview", "/", LayoutDashboard],
-  ["AI Assistant", "/assistant", Bot],
-  ["Analytics", "/analytics", Gauge],
-  ["Decisions", "/decisions", ClipboardCheck],
-  ["Bins", "/bins", Boxes],
-  ["Trucks", "/trucks", Truck],
-  ["Workforce", "/workforce", Users],
-  ["Documents", "/documents", FileText],
+  ["Overview", "/", LayoutDashboard, "dashboard:read"],
+  ["AI Assistant", "/assistant", Bot, "assistant:use"],
+  ["Analytics", "/analytics", Gauge, "analytics:read"],
+  ["Decisions", "/decisions", ClipboardCheck, "decisions:request"],
+  ["Bins", "/bins", Boxes, "analytics:read"],
+  ["Trucks", "/trucks", Truck, "analytics:read"],
+  ["Workforce", "/workforce", Users, "analytics:read"],
+  ["Documents", "/documents", FileText, "documents:read"],
 ] as const;
 const system = [
-  ["Evaluations", "/system/evaluations", Activity],
-  ["Traces", "/system/traces", History],
-  ["Prompt Versions", "/system/prompts", MessageSquareText],
+  ["Evaluations", "/system/evaluations", Activity, "evaluations:read"],
+  ["Traces", "/system/traces", History, "traces:read"],
+  ["Prompt Versions", "/system/prompts", MessageSquareText, "prompts:read"],
 ] as const;
 export function AppSidebar({
   onNavigate,
   className,
+  permissions,
 }: {
   onNavigate?: () => void;
   className?: string;
+  permissions?: string[];
 }) {
   const pathname = usePathname();
-  const items = env.NEXT_PUBLIC_ENABLE_INGESTION_PAGES
-    ? [...primary, ["Ingestion", "/ingestion", Import] as const]
-    : primary;
+  const visible = (permission: string) => !permissions || permissions.includes(permission);
+  const items = (env.NEXT_PUBLIC_ENABLE_INGESTION_PAGES
+    ? [...primary, ["Ingestion", "/ingestion", Import, "datasets:read"] as const]
+    : [...primary]).filter((entry) => visible(entry[3]));
   const systemItems = system.filter(
-    ([name]) =>
+    ([name, , , permission]) =>
       env.NEXT_PUBLIC_ENABLE_ADMIN_PAGES &&
+      visible(permission) &&
       (name !== "Evaluations" || env.NEXT_PUBLIC_ENABLE_EVALUATION_PAGES) &&
       (name !== "Prompt Versions" || env.NEXT_PUBLIC_ENABLE_PROMPT_PAGES),
   );
   const nav = (
-    entries: readonly (readonly [string, string, React.ElementType])[],
+    entries: readonly (readonly [string, string, React.ElementType, string])[],
   ) =>
     entries.map(([label, href, Icon]) => {
       const active =
@@ -105,7 +109,7 @@ export function AppSidebar({
       </nav>
       <div className="text-muted-foreground border-t p-4 text-xs">
         <Settings2 className="me-2 inline size-3" />
-        Authentication and RBAC pending
+        Backend-enforced identity and access
       </div>
     </aside>
   );

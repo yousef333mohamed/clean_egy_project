@@ -58,12 +58,24 @@ class Tracer:
     def _to_record(self, span: Span) -> InteractionTrace:
         attrs = span.attributes
         return InteractionTrace(
-            id=uuid.UUID(span.trace_id), request_id=span.request_id, parent_trace_id=span.parent_trace_id,
-            trace_type=span.trace_type, route=attrs.get("route"), status=span.status, started_at=span.started_at,
-            completed_at=span.completed_at, duration_ms=span.duration_ms, provider=attrs.get("provider"), model=attrs.get("model"),
-            prompt_key=attrs.get("prompt_key"), prompt_version=attrs.get("prompt_version"),
+            id=uuid.UUID(span.trace_id),
+            request_id=span.request_id,
+            parent_trace_id=span.parent_trace_id,
+            trace_type=span.trace_type,
+            route=attrs.get("route"),
+            status=span.status,
+            started_at=span.started_at,
+            completed_at=span.completed_at,
+            duration_ms=span.duration_ms,
+            provider=attrs.get("provider"),
+            model=attrs.get("model"),
+            prompt_key=attrs.get("prompt_key"),
+            prompt_version=attrs.get("prompt_version"),
             input_summary_json=sanitize(span.input_summary) if self.settings.trace_store_inputs else {},
             output_summary_json=sanitize(span.output_summary) if self.settings.trace_store_outputs else {},
-            metrics_json=sanitize({**span.metrics, **{k: v for k, v in attrs.items() if k not in {"route", "provider", "model", "prompt_key", "prompt_version"}}}),
-            error_category=span.error_category, expires_at=span.started_at + timedelta(days=self.settings.trace_retention_days),
+            metrics_json=sanitize(
+                {**span.metrics, **{k: v for k, v in attrs.items() if k not in {"route", "provider", "model", "prompt_key", "prompt_version"}}}
+            ),
+            error_category=span.error_category,
+            expires_at=span.started_at + timedelta(days=self.settings.trace_retention_days),
         )

@@ -40,13 +40,14 @@ def test_model_table_names_are_registered() -> None:
         "document_chunks",
         "ingestion_runs",
         "ingestion_errors",
-            "knowledge_documents",
-            "prompt_versions",
-            "evaluation_runs",
-            "evaluation_results",
-            "interaction_traces",
-            "user_feedback",
-        }
+        "knowledge_documents",
+        "prompt_versions",
+        "evaluation_runs",
+        "evaluation_results",
+        "interaction_traces",
+        "user_feedback",
+        "audit_events",
+    }
     assert expected == set(Base.metadata.tables)
 
 

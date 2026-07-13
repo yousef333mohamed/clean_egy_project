@@ -40,13 +40,13 @@ class AnalyticsAnswerService:
             if self.llm_service is None:
                 raise LLMConfigurationError("LLM_API_KEY is required for generated analytics answers")
             resolved = await self.prompt_registry.get_active_prompt("analytics_answer")
-            prompt = resolved.content.format(
-                question=question, evidence=json.dumps(evidence.model_dump(mode="json"), ensure_ascii=False)
-            )
+            prompt = resolved.content.format(question=question, evidence=json.dumps(evidence.model_dump(mode="json"), ensure_ascii=False))
             generation_started = time.perf_counter()
             answer = await self.llm_service.generate_grounded_answer(
-                system_prompt="Use only D-prefixed structured evidence. Never expose or generate SQL.", user_prompt=prompt,
-                prompt_key=resolved.prompt_key, prompt_version=resolved.version,
+                system_prompt="Use only D-prefixed structured evidence. Never expose or generate SQL.",
+                user_prompt=prompt,
+                prompt_key=resolved.prompt_key,
+                prompt_version=resolved.version,
             )
             logger.info(
                 "analytics_answer_generated",

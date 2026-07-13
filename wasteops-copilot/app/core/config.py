@@ -1,7 +1,9 @@
 """Environment-backed application configuration."""
 
 from functools import lru_cache
-from pydantic import AliasChoices, Field, model_validator
+from pathlib import Path
+from typing import Any
+from pydantic import AliasChoices, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -12,8 +14,52 @@ class Settings(BaseSettings):
     app_environment: str = "development"
     log_level: str = "INFO"
     cors_allowed_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
-    database_url: str
-    database_sync_url: str
+    cors_allow_credentials: bool = True
+    trusted_hosts: str = "localhost,127.0.0.1,testserver,test"
+    auth_enabled: bool = False
+    auth_provider: str = "oidc"
+    oidc_issuer_url: str = ""
+    oidc_jwks_url: str = ""
+    oidc_audience: str = "wasteops-api"
+    oidc_client_id: str = ""
+    oidc_role_claim: str = "roles"
+    oidc_permission_claim: str = "permissions"
+    jwt_allowed_algorithms: str = "RS256"
+    jwt_clock_skew_seconds: int = Field(default=60, ge=0, le=300)
+    jwks_cache_ttl_seconds: int = Field(default=3600, ge=60)
+    jwks_request_timeout_seconds: float = Field(default=10, gt=0, le=30)
+    allow_development_auth: bool = False
+    development_auth_user_id: str = "dev-user"
+    development_auth_roles: str = "SYSTEM_ADMIN"
+    max_request_body_bytes: int = Field(default=10_485_760, ge=1024)
+    redis_url: str = Field(default="redis://localhost:6379/0", repr=False)
+    redis_required: bool = False
+    rate_limit_enabled: bool = False
+    rate_limit_default_per_minute: int = Field(default=120, ge=1)
+    rate_limit_expensive_per_minute: int = Field(default=20, ge=1)
+    rate_limit_admin_per_minute: int = Field(default=30, ge=1)
+    rate_limit_key_prefix: str = "wasteops:rate"
+    metrics_token: str = Field(default="", repr=False)
+    app_release_version: str = "0.1.0"
+    app_commit_sha: str = "unknown"
+    app_build_time: str = "unknown"
+    object_storage_backend: str = "local"
+    object_storage_directory: str = "data/storage"
+    object_storage_bucket: str = ""
+    object_storage_endpoint_url: str = ""
+    object_storage_region: str = ""
+    background_jobs_enabled: bool = False
+    evaluation_result_retention_days: int = Field(default=365, ge=1)
+    audit_log_retention_days: int = Field(default=730, ge=1)
+    feedback_retention_days: int = Field(default=365, ge=1)
+    failed_job_retention_days: int = Field(default=90, ge=1)
+    database_url: str = ""
+    database_sync_url: str = ""
+    database_url_file: str = ""
+    database_sync_url_file: str = ""
+    redis_url_file: str = ""
+    llm_api_key_file: str = ""
+    metrics_token_file: str = ""
     database_pool_size: int = Field(default=10, ge=1)
     database_max_overflow: int = Field(default=20, ge=0)
     database_pool_recycle_seconds: int = Field(default=1800, ge=60)
@@ -109,6 +155,30 @@ class Settings(BaseSettings):
     quality_gate_max_numeric_error_rate: float = Field(default=0.00, ge=0, le=1)
     quality_gate_max_critical_failures: int = Field(default=0, ge=0)
 
+    @model_validator(mode="before")
+    @classmethod
+    def load_file_secrets(cls, values: Any) -> Any:
+        """Resolve explicitly supported Docker/Kubernetes secret files."""
+        if not isinstance(values, dict):
+            return values
+        output = dict(values)
+        for target in ("database_url", "database_sync_url", "redis_url", "llm_api_key", "metrics_token"):
+            file_value = output.get(f"{target}_file")
+            if file_value and not output.get(target):
+                path = Path(str(file_value))
+                if not path.is_file():
+                    raise ValueError(f"Secret file for {target} is unavailable")
+                output[target] = path.read_text(encoding="utf-8").strip()
+        return output
+
+    @field_validator("cors_allowed_origins", "trusted_hosts")
+    @classmethod
+    def reject_wildcards(cls, value: str) -> str:
+        """Reject wildcard transport trust, which is unsafe with credentials."""
+        if "*" in {part.strip() for part in value.split(",")}:
+            raise ValueError("wildcards are not allowed")
+        return value
+
     @model_validator(mode="after")
     def validate_document_chunking(self) -> "Settings":
         """Reject chunk settings that cannot produce controlled overlap."""
@@ -144,8 +214,31 @@ class Settings(BaseSettings):
             raise ValueError("DATA_SCIENCE_PROVIDER must be disabled or mock in this step")
         if self.data_science_provider == "mock" and not self.allow_mock_data_science:
             raise ValueError("ALLOW_MOCK_DATA_SCIENCE must be true to use the mock provider")
-        if self.app_environment.casefold() == "production" and (not self.decision_require_human_approval or self.allow_mock_data_science):
-            raise ValueError("Production decisions require human approval and cannot use mock Data Science evidence")
+        if self.auth_provider != "oidc":
+            raise ValueError("AUTH_PROVIDER must be oidc")
+        algorithms = {item.strip() for item in self.jwt_allowed_algorithms.split(",") if item.strip()}
+        if not algorithms or algorithms - {"RS256", "RS384", "RS512", "ES256", "ES384", "ES512"}:
+            raise ValueError("JWT_ALLOWED_ALGORITHMS contains an unsupported algorithm")
+        if self.object_storage_backend not in {"local", "s3"}:
+            raise ValueError("OBJECT_STORAGE_BACKEND must be local or s3")
+        if not self.database_url or not self.database_sync_url:
+            raise ValueError("DATABASE_URL and DATABASE_SYNC_URL are required")
+        if self.app_environment.casefold() == "production":
+            if not self.decision_require_human_approval or self.allow_mock_data_science:
+                raise ValueError("Production decisions require human approval and cannot use mock Data Science evidence")
+            if not self.auth_enabled:
+                raise ValueError("AUTH_ENABLED must be true in production")
+            if self.allow_development_auth:
+                raise ValueError("Development authentication cannot be enabled in production")
+            if not self.oidc_issuer_url.startswith("https://") or not self.oidc_jwks_url.startswith("https://"):
+                raise ValueError("Production OIDC issuer and JWKS URLs must use HTTPS")
+            origins = {item.strip() for item in self.cors_allowed_origins.split(",") if item.strip()}
+            if not origins or any("localhost" in item or "127.0.0.1" in item or not item.startswith("https://") for item in origins):
+                raise ValueError("Production CORS origins must be explicit HTTPS origins without localhost")
+            if self.enable_retrieval_debug_api or self.analytics_enable_debug_api or self.enable_decision_debug_api:
+                raise ValueError("Debug APIs must be disabled in production")
+            if not self.rate_limit_enabled or not self.redis_required:
+                raise ValueError("Production requires distributed Redis rate limiting")
         return self
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore", populate_by_name=True)

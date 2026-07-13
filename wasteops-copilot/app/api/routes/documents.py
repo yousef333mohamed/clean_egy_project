@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 
 from app.api.dependencies import DatabaseSession
+from app.auth.dependencies import require_permission
 from app.core.config import Settings, get_settings
 from app.ingestion.document_discovery import DocumentPathError, discover_documents
 from app.ingestion.document_ingestion_service import DocumentIngestionService
@@ -23,7 +24,7 @@ from app.schemas.documents import (
     KnowledgeDocumentResponse,
 )
 
-router = APIRouter(prefix="/documents", tags=["documents"])
+router = APIRouter(prefix="/documents", tags=["documents"], dependencies=[Depends(require_permission("documents:read"))])
 AppSettings = Annotated[Settings, Depends(get_settings)]
 
 
@@ -54,7 +55,7 @@ async def list_document_files(settings: AppSettings) -> list[DiscoveredDocumentR
     ]
 
 
-@router.post("/validate", response_model=DocumentIngestionResult)
+@router.post("/validate", response_model=DocumentIngestionResult, dependencies=[Depends(require_permission("documents:ingest"))])
 async def validate_document(request: DocumentPathRequest, session: DatabaseSession, settings: AppSettings) -> DocumentIngestionResult:
     """Extract and chunk one document without requesting embeddings."""
     _require_enabled(settings)
@@ -64,7 +65,7 @@ async def validate_document(request: DocumentPathRequest, session: DatabaseSessi
         raise _path_error(exc) from exc
 
 
-@router.post("/ingest", response_model=DocumentIngestionResult)
+@router.post("/ingest", response_model=DocumentIngestionResult, dependencies=[Depends(require_permission("documents:ingest"))])
 async def ingest_document(request: DocumentIngestRequest, session: DatabaseSession, settings: AppSettings) -> DocumentIngestionResult:
     """Embed and store one safely resolved document."""
     _require_enabled(settings)
@@ -78,7 +79,7 @@ async def ingest_document(request: DocumentIngestRequest, session: DatabaseSessi
         raise _path_error(exc) from exc
 
 
-@router.post("/ingest-all", response_model=list[DocumentIngestionResult])
+@router.post("/ingest-all", response_model=list[DocumentIngestionResult], dependencies=[Depends(require_permission("documents:ingest"))])
 async def ingest_all_documents(
     request: DocumentIngestAllRequest,
     session: DatabaseSession,

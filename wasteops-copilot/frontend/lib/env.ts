@@ -6,6 +6,7 @@ const publicEnvSchema = z.object({
     "NEXT_PUBLIC_API_BASE_URL must be a valid backend URL",
   ),
   NEXT_PUBLIC_APP_ENV: z.enum(["development", "test", "production"]),
+  NEXT_PUBLIC_AUTH_ENABLED: z.enum(["true", "false"]).default("false").transform((value) => value === "true"),
   NEXT_PUBLIC_ENABLE_ADMIN_PAGES: z
     .enum(["true", "false"])
     .transform((value) => value === "true"),
@@ -26,6 +27,7 @@ const result = publicEnvSchema.safeParse({
   NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
   NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
   NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
+  NEXT_PUBLIC_AUTH_ENABLED: process.env.NEXT_PUBLIC_AUTH_ENABLED,
   NEXT_PUBLIC_ENABLE_ADMIN_PAGES: process.env.NEXT_PUBLIC_ENABLE_ADMIN_PAGES,
   NEXT_PUBLIC_ENABLE_INGESTION_PAGES:
     process.env.NEXT_PUBLIC_ENABLE_INGESTION_PAGES,

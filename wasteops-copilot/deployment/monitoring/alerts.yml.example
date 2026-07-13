@@ -1,0 +1,30 @@
+groups:
+  - name: wasteops-critical
+    rules:
+      - alert: WasteOpsBackendReadinessFailure
+        expr: probe_success{job="wasteops-readiness"} == 0
+        for: 5m
+        labels: { severity: critical }
+        annotations: { summary: "WasteOps backend is not ready" }
+      - alert: WasteOpsHighHttp5xxRate
+        expr: sum(rate(wasteops_http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(wasteops_http_requests_total[5m])), 1) > 0.05
+        for: 10m
+        labels: { severity: critical }
+        annotations: { summary: "WasteOps HTTP 5xx rate exceeds 5%" }
+      - alert: WasteOpsAuthorizationDenialsHigh
+        expr: rate(wasteops_authorization_denials_total[10m]) > 1
+        for: 10m
+        labels: { severity: warning }
+        annotations: { summary: "Authorization denials are elevated" }
+      - alert: WasteOpsBackgroundJobFailures
+        expr: increase(wasteops_background_job_events_total{status="failed"}[15m]) > 3
+        labels: { severity: warning }
+        annotations: { summary: "Repeated background job failures" }
+      - alert: WasteOpsBackupMissing
+        expr: time() - wasteops_last_backup_success_timestamp_seconds > 90000
+        labels: { severity: critical }
+        annotations: { summary: "No successful database backup in the expected window" }
+      - alert: WasteOpsRestoreTestStale
+        expr: time() - wasteops_last_restore_test_success_timestamp_seconds > 2678400
+        labels: { severity: critical }
+        annotations: { summary: "Restore verification is overdue" }

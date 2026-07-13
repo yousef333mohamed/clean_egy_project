@@ -1,0 +1,13 @@
+include: [compose.production.yml]
+name: wasteops-staging
+services:
+  reverse_proxy:
+    environment: { PUBLIC_HOST: "${STAGING_PUBLIC_HOST:?required}" }
+  backend:
+    environment:
+      APP_ENVIRONMENT: staging
+      CORS_ALLOWED_ORIGINS: "https://${STAGING_PUBLIC_HOST}"
+      TRUSTED_HOSTS: "${STAGING_PUBLIC_HOST},backend"
+      EVALUATION_ALLOW_LIVE_PROVIDERS: "false"
+  worker:
+    environment: { APP_ENVIRONMENT: staging }

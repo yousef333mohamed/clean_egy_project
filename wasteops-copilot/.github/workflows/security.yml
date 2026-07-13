@@ -1,0 +1,26 @@
+name: security
+on: [push, pull_request]
+permissions: { contents: read, security-events: write }
+jobs:
+  dependencies-and-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install pip-audit bandit
+      - run: pip-audit --strict
+      - run: bandit -r app -x tests
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: npm ci && npm audit --audit-level=high
+        working-directory: frontend
+      - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7
+        env: { GITLEAKS_VERSION: "8.30.1" }
+      - uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
+        with: { scan-type: fs, scan-ref: ., severity: "HIGH,CRITICAL", exit-code: "1", version: "v0.69.3" }
+      - uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610
+        with: { path: ., format: spdx-json, output-file: wasteops-sbom.spdx.json }
+      - uses: actions/upload-artifact@v4
+        with: { name: software-bill-of-materials, path: wasteops-sbom.spdx.json }

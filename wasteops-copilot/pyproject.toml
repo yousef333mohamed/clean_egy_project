@@ -13,11 +13,12 @@ dependencies = [
   "pandas>=2.2,<3", "pgvector>=0.3,<1", "pydantic>=2.9,<3", "pydantic-settings>=2.6,<3",
   "pypdf>=5,<6", "python-docx>=1.1,<2", "psycopg[binary]>=3.2,<4", "greenlet>=3.1,<4",
   "sqlalchemy[asyncio]>=2.0,<3", "structlog>=24.4,<26", "tiktoken>=0.8,<1",
-  "uvicorn[standard]>=0.32,<1"
+  "uvicorn[standard]>=0.32,<1", "PyJWT[crypto]>=2.10,<3", "redis>=5.2,<7",
+  "prometheus-client>=0.21,<1", "boto3>=1.35,<2", "celery[redis]>=5.4,<6"
 ]
 
 [project.optional-dependencies]
-dev = ["httpx>=0.27,<1", "pytest>=8.3,<9", "pytest-asyncio>=0.24,<1", "ruff>=0.8,<1"]
+dev = ["httpx>=0.27,<1", "mypy>=1.15,<2", "pytest>=8.3,<9", "pytest-asyncio>=0.24,<1", "ruff>=0.8,<1"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
@@ -30,3 +31,29 @@ markers = ["integration: requires the dedicated PostgreSQL test database"]
 [tool.ruff]
 target-version = "py312"
 line-length = 160
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+exclude = ["migrations/"]
+
+[[tool.mypy.overrides]]
+# Incremental baseline for legacy modules that predate the production hardening step.
+module = [
+  "app.analytics.tool_registry",
+  "app.analytics.tools.bin_tools",
+  "app.decision.context_planner",
+  "app.decision.evidence_collector",
+  "app.decision.factory",
+  "app.decision.strategies.*",
+  "app.evaluation.regression_runner",
+  "app.ingestion.bulk_writer",
+  "app.ingestion.document_loader",
+  "app.ingestion.ingestion_service",
+  "app.services.rag_service",
+]
+ignore_errors = true

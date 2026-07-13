@@ -19,7 +19,9 @@ def test_retrieval_metrics():
 
 
 async def test_citations_must_be_supplied():
-    result = await CitationEvaluator().evaluate(case(expected_citation_types=["document"]), EvaluationActualResult(citations=["S1", "S9"], supplied_source_ids=["S1"]))
+    result = await CitationEvaluator().evaluate(
+        case(expected_citation_types=["document"]), EvaluationActualResult(citations=["S1", "S9"], supplied_source_ids=["S1"])
+    )
     assert not result.passed and result.metrics["citation_validity"] == 0.5
 
 

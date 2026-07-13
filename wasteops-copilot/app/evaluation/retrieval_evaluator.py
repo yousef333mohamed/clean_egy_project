@@ -27,6 +27,8 @@ class RetrievalEvaluator:
         actual_authority = {item.get("document_id"): item.get("authority_level") for item in actual.retrieved_items}
         authority_ok = all(actual_authority.get(key) == value for key, value in expected_authority.items())
         insufficient_ok = actual.insufficient_context == case.expected_insufficient_context
-        values.update(metadata_filter_accuracy=float(filter_ok), authority_label_accuracy=float(authority_ok), insufficient_context_accuracy=float(insufficient_ok))
+        values.update(
+            metadata_filter_accuracy=float(filter_ok), authority_label_accuracy=float(authority_ok), insufficient_context_accuracy=float(insufficient_ok)
+        )
         passed = values["retrieval_recall_at_5"] == 1 and filter_ok and authority_ok and insufficient_ok
         return _result(passed, sum(values.values()) / len(values), "Retrieval expectations were not met", metrics=values)

@@ -17,6 +17,8 @@ export default defineConfig({
       NEXT_PUBLIC_ENABLE_PROMPT_PAGES: "true",
       NEXT_PUBLIC_DEFAULT_LANGUAGE: "en",
       NEXT_PUBLIC_DEFAULT_TIMEZONE: "Africa/Cairo",
+      AUTH_ENABLED: "false",
+      AUTH_TRUST_HOST: "true",
     },
   },
   projects: [
