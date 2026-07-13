@@ -1,0 +1,14 @@
+[
+  {"question":"What should an operator do when a smart-bin sensor fails?","expected_document":"smart_bin_sensor_fault_sop.md","expected_terms":["fault","inspection","escalate"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"What happens when the bin battery is low?","expected_document":"smart_bin_sensor_fault_sop.md","expected_terms":["battery","maintenance"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"What is the truck pre-trip inspection?","expected_document":"truck_pre_trip_inspection.md","expected_terms":["tires","brakes","inspection"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"How is a missed collection handled?","expected_document":"missed_collection_incident_procedure.md","expected_terms":["route","recovery","close"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"When should a persistent sensor fault be escalated?","expected_document":"smart_bin_sensor_fault_sop.md","expected_terms":["consecutive","escalate"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"What is the corporate maternity leave policy?","expected_document":null,"expected_terms":[],"expected_insufficient_context":true,"expected_synthetic_warning":false},
+  {"question":"ما الإجراء عند توقف حساس الحاوية عن إرسال البيانات؟","expected_document":"smart_bin_sensor_fault_sop.md","expected_terms":["sensor","fault"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"Check حساس BIN-DEMO-001 failure procedure","expected_document":"smart_bin_sensor_fault_sop.md","expected_terms":["BIN-DEMO-001"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"Find truck procedure","filters":{"asset_type":["truck"]},"expected_document":"truck_pre_trip_inspection.md","expected_terms":["inspection"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"What records mention TRK-DEMO-01?","expected_document":"truck_pre_trip_inspection.md","expected_terms":["TRK-DEMO-01"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"Is this an official sensor policy?","expected_document":"smart_bin_sensor_fault_sop.md","expected_terms":["synthetic"],"expected_insufficient_context":false,"expected_synthetic_warning":true},
+  {"question":"Can I rely on an expired procedure?","expected_document":null,"expected_terms":["outdated"],"expected_insufficient_context":true,"expected_synthetic_warning":false}
+]

@@ -5,7 +5,7 @@ from collections.abc import AsyncIterator
 
 from fastapi import FastAPI
 
-from app.api.routes import documents, health, ingestion
+from app.api.routes import chat, documents, health, ingestion, retrieval
 from app.core.config import get_settings
 from app.core.logging import configure_logging, get_logger
 
@@ -26,3 +26,5 @@ app = FastAPI(title=settings.app_name, version="0.2.0", lifespan=lifespan)
 app.include_router(health.router, prefix="/api")
 app.include_router(ingestion.router, prefix="/api")
 app.include_router(documents.router, prefix="/api")
+app.include_router(retrieval.router, prefix="/api")
+app.include_router(chat.router, prefix="/api")

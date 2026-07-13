@@ -3,7 +3,7 @@
 from datetime import date, datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.models.knowledge_document import DocumentStatus
 
@@ -21,6 +21,17 @@ class DocumentMetadata(BaseModel):
     effective_date: date | None = None
     version: str | None = Field(default=None, max_length=40)
     language: Literal["en", "ar", "mixed", "unknown"] | None = None
+    is_synthetic: bool | None = None
+    authority_level: Literal["official", "demo_only", "unknown"] | None = None
+    expiration_date: date | None = None
+
+    @model_validator(mode="after")
+    def validate_authority(self) -> "DocumentMetadata":
+        if self.authority_level == "demo_only" and self.is_synthetic is not True:
+            raise ValueError("demo_only metadata requires is_synthetic=true")
+        if self.authority_level == "official" and self.is_synthetic is not False:
+            raise ValueError("official metadata requires is_synthetic=false")
+        return self
 
 
 class DocumentPathRequest(BaseModel):
@@ -95,6 +106,9 @@ class KnowledgeDocumentResponse(BaseModel):
     effective_date: date | None
     version: str | None
     language: str
+    is_synthetic: bool | None
+    authority_level: str
+    expiration_date: date | None
     title: str
     file_size_bytes: int
     status: DocumentStatus

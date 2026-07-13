@@ -73,6 +73,8 @@ def test_document_embedding_uses_configured_vector_type() -> None:
     index = next(index for index in DocumentChunk.__table__.indexes if index.name == "ix_document_chunks_embedding_hnsw_cosine")
     assert index.dialect_options["postgresql"]["using"] == "hnsw"
     assert index.dialect_options["postgresql"]["ops"] == {"embedding": "vector_cosine_ops"}
+    keyword_index = next(index for index in DocumentChunk.__table__.indexes if index.name == "ix_document_chunks_content_fts_simple")
+    assert keyword_index.dialect_options["postgresql"]["using"] == "gin"
 
 
 def test_relationships_have_back_populates_and_async_loading() -> None:

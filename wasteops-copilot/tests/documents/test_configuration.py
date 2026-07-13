@@ -22,6 +22,13 @@ def test_overlap_must_be_smaller_than_chunk_size() -> None:
         Settings(**base_settings(document_chunk_size=100, document_chunk_overlap=100))
 
 
+def test_retrieval_candidate_limit_and_weights_are_validated() -> None:
+    with pytest.raises(ValidationError, match="CANDIDATE_LIMIT"):
+        Settings(**base_settings(retrieval_top_k=10, retrieval_candidate_limit=5))
+    with pytest.raises(ValidationError, match="must add up"):
+        Settings(**base_settings(retrieval_vector_weight=0.8, retrieval_keyword_weight=0.3))
+
+
 def test_embedding_environment_aliases(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("EMBEDDING_MODEL", "compatible-model")
     monkeypatch.setenv("EMBEDDING_DIMENSIONS", "7")

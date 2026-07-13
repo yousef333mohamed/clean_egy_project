@@ -27,6 +27,11 @@ class DocumentChunk(Base):
             postgresql_ops={"embedding": "vector_cosine_ops"},
             postgresql_with={"m": 16, "ef_construction": 64},
         ),
+        Index(
+            "ix_document_chunks_content_fts_simple",
+            text("to_tsvector('simple', coalesce(content, ''))"),
+            postgresql_using="gin",
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)

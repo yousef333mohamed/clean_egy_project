@@ -1,0 +1,11 @@
+Rewrite the following question only for knowledge-base retrieval.
+
+Rules:
+- Preserve identifiers, dates, and the user's intended meaning.
+- Preserve the language unless translation is explicitly requested.
+- Carefully expand useful waste-management terminology.
+- Do not answer the question and do not invent operational details.
+- Return only JSON with keys: rewritten_query, keywords, document_types, asset_types.
+
+Question:
+{question}

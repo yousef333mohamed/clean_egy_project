@@ -197,6 +197,44 @@ The document API exposes discovery, dry-run validation, ingestion, document hist
 - Retrieval and final RAG answers will be implemented in the next step.
 - The sample Markdown documents are synthetic test material, not official or authoritative policy.
 
+## Semantic retrieval and grounded RAG
+
+Run retrieval without calling the chat model:
+
+```bash
+python scripts/query_rag.py \
+  --question "smart-bin sensor failure" \
+  --retrieval-only
+```
+
+Ask the grounded knowledge assistant:
+
+```bash
+python scripts/query_rag.py \
+  --question "What should an operator do when a smart-bin sensor fails?"
+```
+
+Optional CLI filters include `--document-type`, `--department`, `--asset-type`, `--region`, `--language`, `--source-filename`, and `--synthetic`/`--no-synthetic`.
+
+API example:
+
+```bash
+curl -X POST http://localhost:8000/api/chat/rag \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "What should an operator do when a smart-bin sensor fails?",
+    "filters": {
+      "asset_type": ["smart_bin"]
+    }
+  }'
+```
+
+`POST /api/retrieval/search` is a development retrieval-only endpoint and is controlled by `ENABLE_RETRIEVAL_DEBUG_API`. `POST /api/chat/rag` is controlled by `ENABLE_CHAT_API`. Full chunk content is suppressed by default and in production unless explicitly enabled; embedding vectors are never returned.
+
+Retrieval scores are ranking signals, not calibrated probabilities or confidence percentages. Answers depend entirely on active documents in the knowledge base, and the assistant returns an insufficient-context response instead of inventing missing company procedures. Synthetic documents are demonstration material and are explicitly labelled as non-authoritative.
+
+Text-to-SQL, structured operational-data analysis, optimization, and Data Science integrations are not implemented in this step.
+
 ## Data-model notes
 
 - Telemetry timestamps use timezone-aware PostgreSQL timestamps.

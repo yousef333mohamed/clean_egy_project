@@ -1,0 +1,16 @@
+User question:
+{question}
+
+Sources:
+{context}
+
+Generate an answer with:
+
+1. Direct answer
+2. Recommended procedure or relevant information
+3. Important cautions
+4. Missing information, when applicable
+5. Source citations
+
+Use citations in the exact format [S1], [S2].
+Do not add a references section containing sources that were not used.

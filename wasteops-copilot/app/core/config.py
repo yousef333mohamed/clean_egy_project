@@ -25,6 +25,23 @@ class Settings(BaseSettings):
     )
     vector_dimensions: int = Field(default=1536, ge=1, validation_alias=AliasChoices("EMBEDDING_DIMENSIONS", "VECTOR_DIMENSIONS"))
     retrieval_top_k: int = Field(default=8, ge=1, le=100)
+    retrieval_candidate_limit: int = Field(default=30, ge=1, le=500)
+    retrieval_min_score: float = Field(default=0.45, ge=0, le=1)
+    retrieval_vector_weight: float = Field(default=0.75, ge=0, le=1)
+    retrieval_keyword_weight: float = Field(default=0.25, ge=0, le=1)
+    retrieval_max_context_tokens: int = Field(default=5000, gt=0)
+    retrieval_max_chunks_per_document: int = Field(default=3, gt=0)
+    retrieval_max_query_chars: int = Field(default=4000, gt=0)
+    retrieval_enable_query_rewrite: bool = True
+    retrieval_enable_hybrid: bool = True
+    retrieval_enable_reranking: bool = True
+    retrieval_allow_production_content: bool = False
+    llm_temperature: float = Field(default=0.1, ge=0, le=2)
+    llm_max_output_tokens: int = Field(default=1200, gt=0)
+    llm_timeout_seconds: float = Field(default=90, gt=0)
+    llm_max_retries: int = Field(default=3, ge=0)
+    enable_chat_api: bool = True
+    enable_retrieval_debug_api: bool = True
     sql_query_timeout_ms: int = Field(default=5000, ge=100)
     sql_row_limit: int = Field(default=200, ge=1, le=5000)
     csv_batch_size: int = Field(default=5000, ge=1)
@@ -50,6 +67,10 @@ class Settings(BaseSettings):
             raise ValueError("DOCUMENT_CHUNK_OVERLAP must be smaller than DOCUMENT_CHUNK_SIZE")
         if self.document_min_chunk_size > self.document_chunk_size:
             raise ValueError("DOCUMENT_MIN_CHUNK_SIZE must not exceed DOCUMENT_CHUNK_SIZE")
+        if self.retrieval_candidate_limit < self.retrieval_top_k:
+            raise ValueError("RETRIEVAL_CANDIDATE_LIMIT must be greater than or equal to RETRIEVAL_TOP_K")
+        if abs((self.retrieval_vector_weight + self.retrieval_keyword_weight) - 1.0) > 0.001:
+            raise ValueError("RETRIEVAL_VECTOR_WEIGHT and RETRIEVAL_KEYWORD_WEIGHT must add up to 1")
         return self
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore", populate_by_name=True)
