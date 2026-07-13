@@ -1,0 +1,156 @@
+# Step 11 implementation file inventory
+
+This inventory uses Git status codes (`M` modified, `??` created) and excludes the pre-existing workspace-level `.venv/` directory.
+
+```text
+ M .env.example
+ M .env.production.example
+ M .github/workflows/build.yml
+ M .github/workflows/quality.yml
+ M README.md
+ M app/core/config.py
+ M app/decision/confidence_calculator.py
+ M app/decision/context_planner.py
+ M app/decision/decision_router.py
+ M app/decision/evidence_collector.py
+ M app/decision/factory.py
+ M app/decision/option_generator.py
+ M app/integrations/data_science/interfaces.py
+ M app/integrations/data_science/mock_provider.py
+ M app/main.py
+ M app/models/__init__.py
+ M app/observability/prometheus.py
+ M app/schemas/confidence.py
+ M app/services/decision_intelligence_service.py
+ M deployment/compose/compose.production.yml
+ M frontend/app/(dashboard)/bins/page.tsx
+ M frontend/app/(dashboard)/trucks/page.tsx
+ M frontend/components/decisions/confidence-breakdown.tsx
+ M frontend/components/decisions/recommendation-card.tsx
+ M frontend/components/layout/app-sidebar.tsx
+ M frontend/lib/schemas/api.ts
+ M frontend/tests/components.test.tsx
+ M migrations/versions/0005_evaluation_observability.py
+ M pyproject.toml
+ M tests/decision/test_decision_router.py
+ M tests/fixtures/decision_evaluation.json
+ M tests/test_decisions_api.py
+ M tests/test_models.py
+?? app/api/routes/ml.py
+?? app/integrations/data_science/circuit_breaker.py
+?? app/integrations/data_science/client.py
+?? app/integrations/data_science/errors.py
+?? app/integrations/data_science/factory.py
+?? app/integrations/data_science/providers.py
+?? app/integrations/data_science/schemas.py
+?? app/models/ml_prediction.py
+?? docs/ml/architecture.md
+?? docs/ml/drift-management.md
+?? docs/ml/feature-registry.md
+?? docs/ml/implementation-files.md
+?? docs/ml/limitations.md
+?? docs/ml/model-evaluation.md
+?? docs/ml/model-registry.md
+?? docs/ml/model-training.md
+?? docs/ml/monitoring.md
+?? docs/ml/prediction-contracts.md
+?? docs/ml/promotion-process.md
+?? docs/ml/retraining.md
+?? evaluation_datasets/decision/ml_predictions_v1.json
+?? frontend/app/(dashboard)/system/models/layout.tsx
+?? frontend/app/(dashboard)/system/models/page.tsx
+?? frontend/components/models/model-management.tsx
+?? frontend/components/models/prediction-panel.tsx
+?? frontend/lib/api/ml.ts
+?? migrations/versions/0007_ml_platform.py
+?? ml-service/.env.example
+?? ml-service/.gitignore
+?? ml-service/Dockerfile
+?? ml-service/README.md
+?? ml-service/app/__init__.py
+?? ml-service/app/api/__init__.py
+?? ml-service/app/api/dependencies.py
+?? ml-service/app/api/routes/__init__.py
+?? ml-service/app/api/routes/health.py
+?? ml-service/app/api/routes/models.py
+?? ml-service/app/api/routes/monitoring.py
+?? ml-service/app/api/routes/predictions.py
+?? ml-service/app/core/__init__.py
+?? ml-service/app/core/config.py
+?? ml-service/app/core/database.py
+?? ml-service/app/core/logging.py
+?? ml-service/app/core/rate_limit.py
+?? ml-service/app/features/__init__.py
+?? ml-service/app/features/bin_features.py
+?? ml-service/app/features/environmental_features.py
+?? ml-service/app/features/feature_registry.py
+?? ml-service/app/features/feature_validation.py
+?? ml-service/app/features/operations_features.py
+?? ml-service/app/features/truck_features.py
+?? ml-service/app/features/workforce_features.py
+?? ml-service/app/inference/__init__.py
+?? ml-service/app/inference/explanation_service.py
+?? ml-service/app/inference/feature_repository.py
+?? ml-service/app/inference/model_loader.py
+?? ml-service/app/inference/prediction_service.py
+?? ml-service/app/inference/prediction_validator.py
+?? ml-service/app/main.py
+?? ml-service/app/models/__init__.py
+?? ml-service/app/models/base.py
+?? ml-service/app/models/collection_priority_model.py
+?? ml-service/app/models/missed_collection_model.py
+?? ml-service/app/models/overflow_model.py
+?? ml-service/app/models/truck_anomaly_model.py
+?? ml-service/app/models/workforce_forecast_model.py
+?? ml-service/app/monitoring/__init__.py
+?? ml-service/app/monitoring/data_quality_monitor.py
+?? ml-service/app/monitoring/drift_monitor.py
+?? ml-service/app/monitoring/performance_monitor.py
+?? ml-service/app/monitoring/prediction_logger.py
+?? ml-service/app/registry/__init__.py
+?? ml-service/app/registry/model_metadata.py
+?? ml-service/app/registry/model_registry.py
+?? ml-service/app/registry/promotion_service.py
+?? ml-service/app/schemas/__init__.py
+?? ml-service/app/schemas/collection_priority.py
+?? ml-service/app/schemas/common.py
+?? ml-service/app/schemas/missed_collection.py
+?? ml-service/app/schemas/overflow.py
+?? ml-service/app/schemas/truck_anomaly.py
+?? ml-service/app/schemas/workforce_forecast.py
+?? ml-service/artifacts/metrics/.gitkeep
+?? ml-service/artifacts/models/.gitkeep
+?? ml-service/artifacts/reports/model_cards/.gitkeep
+?? ml-service/artifacts/reports/model_cards/bin-overflow-baseline.md
+?? ml-service/artifacts/reports/model_cards/collection-priority-rules-1.md
+?? ml-service/artifacts/reports/model_cards/missed-collection-baseline.md
+?? ml-service/artifacts/reports/model_cards/truck-anomaly-baseline.md
+?? ml-service/artifacts/reports/model_cards/workforce-forecast-baseline.md
+?? ml-service/notebooks/README.md
+?? ml-service/pyproject.toml
+?? ml-service/scripts/backfill_predictions.py
+?? ml-service/scripts/check_drift.py
+?? ml-service/scripts/evaluate_models.py
+?? ml-service/scripts/promote_model.py
+?? ml-service/scripts/train_all.py
+?? ml-service/tests/conftest.py
+?? ml-service/tests/test_api_security.py
+?? ml-service/tests/test_features.py
+?? ml-service/tests/test_models.py
+?? ml-service/tests/test_registry.py
+?? ml-service/tests/test_training.py
+?? ml-service/tests/test_validation_and_schemas.py
+?? ml-service/training/__init__.py
+?? ml-service/training/datasets.py
+?? ml-service/training/evaluation.py
+?? ml-service/training/experiment_tracking.py
+?? ml-service/training/model_card_generator.py
+?? ml-service/training/splits.py
+?? ml-service/training/train_collection_priority.py
+?? ml-service/training/train_missed_collection.py
+?? ml-service/training/train_overflow.py
+?? ml-service/training/train_truck_anomaly.py
+?? ml-service/training/train_workforce_forecast.py
+?? tests/decision/test_ml_integration.py
+```
+

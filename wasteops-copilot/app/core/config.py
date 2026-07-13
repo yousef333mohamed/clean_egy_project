@@ -130,12 +130,22 @@ class Settings(BaseSettings):
     decision_feasibility_weight: float = Field(default=0.15, ge=0, le=1)
     decision_policy_alignment_weight: float = Field(default=0.10, ge=0, le=1)
     confidence_retrieval_coverage_weight: float = Field(default=0.25, ge=0, le=1)
-    confidence_source_quality_weight: float = Field(default=0.25, ge=0, le=1)
-    confidence_data_completeness_weight: float = Field(default=0.20, ge=0, le=1)
+    confidence_source_quality_weight: float = Field(default=0.20, ge=0, le=1)
+    confidence_data_completeness_weight: float = Field(default=0.15, ge=0, le=1)
     confidence_source_agreement_weight: float = Field(default=0.15, ge=0, le=1)
-    confidence_recency_weight: float = Field(default=0.15, ge=0, le=1)
+    confidence_recency_weight: float = Field(default=0.10, ge=0, le=1)
+    confidence_model_reliability_weight: float = Field(default=0.15, ge=0, le=1)
     data_science_provider: str = "disabled"
     allow_mock_data_science: bool = False
+    ml_service_base_url: str = "http://ml_service:8001"
+    ml_service_token: str = Field(default="", repr=False)
+    ml_service_token_file: str = ""
+    ml_admin_service_token: str = Field(default="", repr=False)
+    ml_admin_service_token_file: str = ""
+    ml_client_timeout_seconds: float = Field(default=30, gt=0, le=120)
+    ml_client_max_retries: int = Field(default=2, ge=0, le=5)
+    ml_circuit_breaker_failure_threshold: int = Field(default=5, ge=1, le=20)
+    ml_circuit_breaker_recovery_seconds: float = Field(default=60, gt=0, le=600)
     enable_evaluation_api: bool = True
     enable_prompt_admin_api: bool = True
     enable_trace_api: bool = True
@@ -162,7 +172,7 @@ class Settings(BaseSettings):
         if not isinstance(values, dict):
             return values
         output = dict(values)
-        for target in ("database_url", "database_sync_url", "redis_url", "llm_api_key", "metrics_token"):
+        for target in ("database_url", "database_sync_url", "redis_url", "llm_api_key", "metrics_token", "ml_service_token", "ml_admin_service_token"):
             file_value = output.get(f"{target}_file")
             if file_value and not output.get(target):
                 path = Path(str(file_value))
@@ -207,13 +217,16 @@ class Settings(BaseSettings):
             + self.confidence_data_completeness_weight
             + self.confidence_source_agreement_weight
             + self.confidence_recency_weight
+            + self.confidence_model_reliability_weight
         )
         if abs(confidence_weight - 1.0) > 0.001:
             raise ValueError("Decision confidence weights must add up to 1")
-        if self.data_science_provider not in {"disabled", "mock"}:
-            raise ValueError("DATA_SCIENCE_PROVIDER must be disabled or mock in this step")
+        if self.data_science_provider not in {"disabled", "mock", "remote"}:
+            raise ValueError("DATA_SCIENCE_PROVIDER must be disabled, mock, or remote")
         if self.data_science_provider == "mock" and not self.allow_mock_data_science:
             raise ValueError("ALLOW_MOCK_DATA_SCIENCE must be true to use the mock provider")
+        if self.data_science_provider == "remote" and (not self.ml_service_base_url.startswith(("http://", "https://")) or not self.ml_service_token):
+            raise ValueError("Remote Data Science requires ML_SERVICE_BASE_URL and ML_SERVICE_TOKEN")
         if self.auth_provider != "oidc":
             raise ValueError("AUTH_PROVIDER must be oidc")
         algorithms = {item.strip() for item in self.jwt_allowed_algorithms.split(",") if item.strip()}

@@ -63,7 +63,8 @@ describe("operations components", () => {
             source_quality: 0.5,
             data_completeness: 0.5,
             source_agreement: 0.5,
-            recency: 0.5,
+          recency: 0.5,
+          model_reliability: 0.5,
           },
         }}
       />,

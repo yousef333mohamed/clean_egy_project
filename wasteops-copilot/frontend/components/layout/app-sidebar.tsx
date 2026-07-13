@@ -12,6 +12,7 @@ import {
   Import,
   LayoutDashboard,
   MessageSquareText,
+  BrainCircuit,
   Settings2,
   Sparkles,
   Truck,
@@ -31,6 +32,7 @@ const primary = [
   ["Documents", "/documents", FileText, "documents:read"],
 ] as const;
 const system = [
+  ["Models", "/system/models", BrainCircuit, "system:configure"],
   ["Evaluations", "/system/evaluations", Activity, "evaluations:read"],
   ["Traces", "/system/traces", History, "traces:read"],
   ["Prompt Versions", "/system/prompts", MessageSquareText, "prompts:read"],

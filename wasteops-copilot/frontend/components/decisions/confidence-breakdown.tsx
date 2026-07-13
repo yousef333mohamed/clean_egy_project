@@ -6,6 +6,7 @@ const labels = {
   data_completeness: "Data completeness",
   source_agreement: "Source agreement",
   recency: "Recency",
+  model_reliability: "Model reliability",
 };
 export function ConfidenceBreakdown({
   confidence,

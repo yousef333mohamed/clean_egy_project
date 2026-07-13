@@ -128,6 +128,7 @@ export const confidenceSchema = z.object({
     data_completeness: z.number(),
     source_agreement: z.number(),
     recency: z.number(),
+    model_reliability: z.number(),
   }),
   explanation: z.string(),
 });

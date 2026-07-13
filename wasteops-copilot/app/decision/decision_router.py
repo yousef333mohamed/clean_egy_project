@@ -51,11 +51,18 @@ class DecisionRouter:
                 unsupported_reason="Route optimization is not implemented in this step.",
             )
         if any(term in lowered for term in PREDICTIVE):
+            predictive_type = request.decision_type or self._deterministic_type(lowered, scope)
+            if predictive_type and predictive_type not in {
+                DecisionType.UNSUPPORTED_PREDICTIVE_DECISION,
+                DecisionType.UNSUPPORTED_AUTONOMOUS_ACTION,
+                DecisionType.UNSUPPORTED_OPTIMIZATION,
+            }:
+                return self._registered(predictive_type, scope).model_copy(update={"requires_data_science": True})
             return DecisionRouteResult(
                 decision_type=DecisionType.UNSUPPORTED_PREDICTIVE_DECISION,
                 scope=scope,
                 requires_data_science=True,
-                unsupported_reason="The request requires a future Data Science prediction provider.",
+                unsupported_reason="A supported predictive domain and scope are required.",
             )
         decision_type = request.decision_type or self._deterministic_type(lowered, scope)
         if decision_type in {

@@ -21,7 +21,7 @@ class OptionGenerator:
         selected = templates[:maximum]
         if len(selected) < 2:
             selected = templates[:2]
-        evidence_ids = [item.evidence_id for item in evidence if item.source_type != "model"]
+        evidence_ids = [item.evidence_id for item in evidence if not item.is_synthetic]
         options = []
         seen = set()
         for index, template in enumerate(selected, start=1):

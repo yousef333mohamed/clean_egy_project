@@ -18,6 +18,7 @@ from app.services.decision_intelligence_service import DecisionIntelligenceServi
 from app.utils.token_counter import TokenCounter
 from app.prompts.registry import PromptRegistry
 from app.observability.tracer import Tracer
+from app.integrations.data_science.factory import build_data_science_provider
 
 
 class _UnavailableEmbedding:
@@ -54,7 +55,7 @@ def build_decision_service(session, settings) -> DecisionIntelligenceService:
     )
     context = ContextBuilder(TokenCounter(settings.chat_model_name))
     analytics = AnalyticsService(analytics_registry, settings, tracer=Tracer(session, settings))
-    collector = DecisionEvidenceCollector(analytics, retrieval, context, session, settings)
+    collector = DecisionEvidenceCollector(analytics, retrieval, context, session, settings, data_science_provider=build_data_science_provider(settings))
     return DecisionIntelligenceService(
         router,
         planner,

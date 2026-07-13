@@ -11,6 +11,7 @@ class ConfidenceComponents(BaseModel):
     data_completeness: float = Field(ge=0, le=1)
     source_agreement: float = Field(ge=0, le=1)
     recency: float = Field(ge=0, le=1)
+    model_reliability: float = Field(default=1.0, ge=0, le=1)
 
 
 class DecisionConfidence(BaseModel):

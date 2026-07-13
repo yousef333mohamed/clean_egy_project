@@ -1,5 +1,7 @@
 # WasteOps Decision Intelligence Copilot
 
+Step 11 adds a separate private `ml-service/` for point-in-time feature engineering, interpretable operational baselines/candidates, checksum-verified model serving, explicit registry promotion, drift/performance monitoring, and typed Decision Intelligence `[M#]` evidence. See [the ML architecture](docs/ml/architecture.md) and [ML limitations](docs/ml/limitations.md).
+
 This repository currently implements Step 2: the FastAPI and PostgreSQL/pgvector database foundation for WasteOps. It defines the exact operational dataset schema, asynchronous application sessions, Alembic-managed migrations, and application/database health endpoints.
 
 CSV ingestion, document ingestion, embeddings, RAG, LLM calls, authentication, prediction models, and a frontend are intentionally not implemented yet. The CSV files under `data/raw` are unchanged reference inputs and are not loaded automatically.

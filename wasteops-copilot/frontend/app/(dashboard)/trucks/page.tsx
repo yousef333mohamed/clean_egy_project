@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { ToolEvidencePanel } from "@/components/shared/tool-evidence-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PredictionPanel } from "@/components/models/prediction-panel";
 export default function TrucksPage() {
   return (
     <>
@@ -31,6 +32,7 @@ export default function TrucksPage() {
             parameters={{ latest_available: true }}
           />
         </section>
+        <PredictionPanel domain="trucks" />
       </div>
     </>
   );

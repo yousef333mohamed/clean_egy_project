@@ -23,7 +23,7 @@ def router(decision_registry, analytics_registry):
         ("Should TRK-014 be inspected?", DecisionType.TRUCK_PERFORMANCE_RESPONSE),
         ("How should we respond to workforce absence?", DecisionType.WORKFORCE_OPERATIONAL_RESPONSE),
         ("What should we prioritize based on latest available data?", DecisionType.GENERAL_OPERATIONAL_PRIORITY),
-        ("Which bins will overflow tomorrow?", DecisionType.UNSUPPORTED_PREDICTIVE_DECISION),
+        ("Which bins will overflow tomorrow?", DecisionType.BIN_ATTENTION_PRIORITY),
         ("Automatically dispatch TRK-014", DecisionType.UNSUPPORTED_AUTONOMOUS_ACTION),
         ("Optimize the collection route", DecisionType.UNSUPPORTED_OPTIMIZATION),
         ("ما هو أفضل إجراء للحاويات الحرجة في Greater Cairo؟", DecisionType.BIN_ATTENTION_PRIORITY),

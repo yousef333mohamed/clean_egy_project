@@ -1,0 +1,10 @@
+.env
+artifacts/models/**/*.joblib
+artifacts/models/**/metadata.json
+artifacts/metrics/*.json
+artifacts/reports/drift/
+artifacts/reports/performance/
+artifacts/reports/data-quality/
+artifacts/*.resume
+mlruns/
+mlflow.db

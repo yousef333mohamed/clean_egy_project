@@ -88,7 +88,7 @@ def test_enabled_debug_is_summary_only(monkeypatch):
     assert all(term not in response.text.casefold() for term in ("sql", "prompt", "embedding", "credential"))
 
 
-def test_unsupported_prediction_is_200_without_provider():
+def test_predictive_decision_is_insufficient_without_provider():
     app.dependency_overrides[get_settings] = lambda: settings()
     try:
         response = TestClient(app).post("/api/decisions/recommend", json={"question": "Which bins will overflow tomorrow?"})
@@ -96,7 +96,7 @@ def test_unsupported_prediction_is_200_without_provider():
         app.dependency_overrides.clear()
     assert response.status_code == 200
     body = response.json()
-    assert body["decision_type"] == "UNSUPPORTED_PREDICTIVE_DECISION"
+    assert body["decision_type"] == "BIN_ATTENTION_PRIORITY"
     assert body["requires_human_approval"] is True and body["insufficient_context"] is True
 
 

@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { ToolEvidencePanel } from "@/components/shared/tool-evidence-panel";
 import { Button } from "@/components/ui/button";
+import { PredictionPanel } from "@/components/models/prediction-panel";
 const tabs = {
   critical: ["Critical Fill", "list_critical_bins"],
   battery: ["Low Battery", "list_low_battery_bins"],
@@ -45,6 +46,7 @@ export default function BinsPage() {
         label={active[0]}
         parameters={{ latest_available: true }}
       />
+      <div className="mt-6"><PredictionPanel domain="bins" /></div>
     </>
   );
 }

@@ -68,11 +68,20 @@ services:
       APP_RELEASE_VERSION: "${RELEASE_VERSION:?required}"
       APP_COMMIT_SHA: "${APP_COMMIT_SHA:?required}"
       APP_BUILD_TIME: "${APP_BUILD_TIME:?required}"
-    secrets: [database_url, database_sync_url, redis_url, llm_api_key, metrics_token]
+      DATA_SCIENCE_PROVIDER: remote
+      ML_SERVICE_BASE_URL: http://ml_service:8001
+      ML_SERVICE_TOKEN_FILE: /run/secrets/ml_service_token
+      ML_ADMIN_SERVICE_TOKEN_FILE: /run/secrets/ml_admin_service_token
+      ML_CLIENT_TIMEOUT_SECONDS: "30"
+      ML_CLIENT_MAX_RETRIES: "2"
+      ML_CIRCUIT_BREAKER_FAILURE_THRESHOLD: "5"
+      ML_CIRCUIT_BREAKER_RECOVERY_SECONDS: "60"
+    secrets: [database_url, database_sync_url, redis_url, llm_api_key, metrics_token, ml_service_token, ml_admin_service_token]
     networks: [internal]
     depends_on:
       database: { condition: service_healthy }
       redis: { condition: service_healthy }
+      ml_service: { condition: service_healthy }
     restart: unless-stopped
     read_only: true
     tmpfs: [/tmp]
@@ -81,6 +90,46 @@ services:
     healthcheck: { test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health/ready', timeout=3)"], interval: 30s, timeout: 5s, retries: 5 }
     stop_grace_period: 30s
     logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
+
+  ml_service:
+    image: "${IMAGE_REGISTRY}/wasteops-ml-service:${IMAGE_TAG}"
+    environment:
+      ML_SERVICE_ENV: production
+      ANALYTICS_DATABASE_URL_FILE: /run/secrets/ml_analytics_database_url
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MODEL_ARTIFACT_DIRECTORY: /models
+      REQUIRE_PRODUCTION_MODELS: "true"
+      ALLOWED_MODEL_CHECKSUMS: "${ALLOWED_MODEL_CHECKSUMS:?approved model checksums required}"
+      SERVICE_TOKEN_FILE: /run/secrets/ml_service_token
+      ADMIN_SERVICE_TOKEN_FILE: /run/secrets/ml_admin_service_token
+      MAX_PREDICTION_BATCH_SIZE: "1000"
+    volumes: [model_artifacts:/models:ro]
+    secrets: [ml_analytics_database_url, ml_service_token, ml_admin_service_token]
+    networks: [internal]
+    depends_on: { database: { condition: service_healthy }, mlflow: { condition: service_healthy } }
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck: { test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/api/health/ready', timeout=3)"], interval: 30s, timeout: 5s, retries: 5 }
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.12.0
+    environment:
+      MLFLOW_S3_ENDPOINT_URL: "${OBJECT_STORAGE_ENDPOINT_URL:?private artifact endpoint required}"
+      AWS_DEFAULT_REGION: "${OBJECT_STORAGE_REGION:?required}"
+    secrets: [mlflow_database_url, mlflow_s3_access_key, mlflow_s3_secret_key]
+    command: [sh, -ec, "export MLFLOW_BACKEND_STORE_URI=$$(cat /run/secrets/mlflow_database_url); export AWS_ACCESS_KEY_ID=$$(cat /run/secrets/mlflow_s3_access_key); export AWS_SECRET_ACCESS_KEY=$$(cat /run/secrets/mlflow_s3_secret_key); exec mlflow server --host 0.0.0.0 --port 5000 --artifacts-destination s3://${MLFLOW_ARTIFACT_BUCKET:?required}"]
+    networks: [internal]
+    depends_on: { database: { condition: service_healthy } }
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck: { test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3)"], interval: 30s, timeout: 5s, retries: 5 }
 
   worker:
     image: "${IMAGE_REGISTRY}/wasteops-worker:${IMAGE_TAG}"
@@ -189,6 +238,7 @@ networks:
 volumes:
   postgres_data: {}
   tls_cert: { external: true, name: wasteops_tls }
+  model_artifacts: { external: true, name: wasteops_model_artifacts }
 secrets:
   auth_secret: { external: true }
   oidc_client_secret: { external: true }
@@ -200,3 +250,9 @@ secrets:
   redis_url: { external: true }
   llm_api_key: { external: true }
   metrics_token: { external: true }
+  ml_service_token: { external: true }
+  ml_admin_service_token: { external: true }
+  ml_analytics_database_url: { external: true }
+  mlflow_database_url: { external: true }
+  mlflow_s3_access_key: { external: true }
+  mlflow_s3_secret_key: { external: true }

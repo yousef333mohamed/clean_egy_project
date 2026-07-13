@@ -15,12 +15,14 @@ class ConfidenceCalculator:
         completeness = self._completeness(evidence)
         agreement = self._agreement(evidence)
         recency = self._recency(evidence, explicitly_historical)
+        model_reliability = self._model_reliability(evidence)
         components = ConfidenceComponents(
             retrieval_coverage=coverage,
             source_quality=quality,
             data_completeness=completeness,
             source_agreement=agreement,
             recency=recency,
+            model_reliability=model_reliability,
         )
         score = (
             coverage * self.settings.confidence_retrieval_coverage_weight
@@ -28,14 +30,35 @@ class ConfidenceCalculator:
             + completeness * self.settings.confidence_data_completeness_weight
             + agreement * self.settings.confidence_source_agreement_weight
             + recency * self.settings.confidence_recency_weight
+            + model_reliability * self.settings.confidence_model_reliability_weight
         )
         level = ConfidenceLevel.LOW if score < 0.4 else ConfidenceLevel.MEDIUM if score < 0.7 else ConfidenceLevel.HIGH
         return DecisionConfidence(
             score=round(max(0.0, min(1.0, score)), 6),
             level=level,
             components=components,
-            explanation="Evidence-quality score based on coverage, source authority, completeness, agreement, and recency; it is not a probability of correctness.",
+            explanation="Evidence-quality score based on coverage, source authority, completeness, agreement, recency, and approved-model reliability; it is not a probability of correctness and does not use raw prediction probability.",
         )
+
+    @staticmethod
+    def _model_reliability(evidence) -> float:
+        models = [item for item in evidence if item.source_type == DecisionEvidenceType.MODEL]
+        if not models:
+            return 0.5
+        scores = []
+        for item in models:
+            values = item.supporting_values
+            score = 0.85 if values.get("production_approved") else 0.45
+            if not values.get("feature_fresh", False):
+                score -= 0.25
+            if values.get("drift_status") in {"warning", "critical"}:
+                score -= 0.20
+            if values.get("warnings"):
+                score -= min(0.20, len(values["warnings"]) * 0.05)
+            if item.is_synthetic:
+                score = 0.0
+            scores.append(max(0.0, min(1.0, score)))
+        return sum(scores) / len(scores)
 
     @staticmethod
     def _source_quality(evidence) -> float:

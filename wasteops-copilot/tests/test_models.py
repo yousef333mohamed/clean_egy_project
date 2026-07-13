@@ -47,6 +47,12 @@ def test_model_table_names_are_registered() -> None:
         "interaction_traces",
         "user_feedback",
         "audit_events",
+        "ml_prediction_runs",
+        "ml_predictions",
+        "ml_model_versions",
+        "ml_data_quality_events",
+        "ml_drift_reports",
+        "ml_performance_reports",
     }
     assert expected == set(Base.metadata.tables)
 

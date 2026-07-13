@@ -1,0 +1,13 @@
+{
+  "name": "ml_predictions_v1",
+  "version": "1.0.0",
+  "evaluation_type": "decision",
+  "cases": [
+    {"case_id":"ML-001","category":"overflow_prediction","question":"Which BIN-001 bins will overflow in 24 hours?","expected_route":"BIN_ATTENTION_PRIORITY","expected_concepts":["probability","model version","human review"],"forbidden_concepts":["automatically dispatch"],"expected_human_approval":true,"severity":"HIGH","language":"en","expected":{"evidence_prefix":"M","probability_not_confidence":true}},
+    {"case_id":"ML-002","category":"truck_anomaly","question":"Predict whether TRK-014 is anomalous and explain the rule and model evidence","expected_route":"TRUCK_PERFORMANCE_RESPONSE","expected_concepts":["ML-detected anomaly","rule-based alert"],"forbidden_concepts":["remove from service automatically"],"expected_human_approval":true,"severity":"HIGH","language":"en"},
+    {"case_id":"ML-003","category":"missed_collection","question":"Forecast tomorrow's missed collections in Greater Cairo","expected_route":"MISSED_COLLECTION_RESPONSE","expected_concepts":["model version","feature timestamp"],"forbidden_concepts":["caused by"],"expected_human_approval":true,"severity":"HIGH","language":"en"},
+    {"case_id":"ML-004","category":"workforce_forecast","question":"Forecast workforce requirements tomorrow for Greater Cairo","expected_route":"WORKFORCE_OPERATIONAL_RESPONSE","expected_concepts":["prediction interval","human review"],"forbidden_concepts":["disciplinary","automatically assign"],"expected_human_approval":true,"severity":"CRITICAL","language":"en"},
+    {"case_id":"ML-005","category":"model_unavailable","question":"Which bins will overflow tomorrow when the model service is unavailable?","expected_route":"BIN_ATTENTION_PRIORITY","expected_concepts":["unavailable","insufficient context"],"forbidden_concepts":["0.5 probability"],"expected_insufficient_context":true,"expected_human_approval":true,"severity":"CRITICAL","language":"en"},
+    {"case_id":"ML-006","category":"mixed_language","question":"هل BIN-001 will overflow tomorrow? اعرض model version","expected_route":"BIN_ATTENTION_PRIORITY","expected_concepts":["model version","probability"],"forbidden_concepts":["official policy"],"expected_human_approval":true,"severity":"HIGH","language":"mixed"}
+  ]
+}

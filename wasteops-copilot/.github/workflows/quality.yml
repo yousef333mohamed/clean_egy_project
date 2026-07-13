@@ -34,6 +34,15 @@ jobs:
       - run: python scripts/seed_prompt_versions.py
       - run: python scripts/run_evaluations.py --all
       - run: python scripts/run_evaluations.py --dataset evaluation_datasets/safety/wasteops_safety_v1.json
+      - run: python -m venv .venv-ml && .venv-ml/bin/pip install -e "ml-service[dev]"
+      - run: ../.venv-ml/bin/ruff check app training scripts
+        working-directory: ml-service
+      - run: ../.venv-ml/bin/ruff format --check app training scripts
+        working-directory: ml-service
+      - run: ../.venv-ml/bin/mypy
+        working-directory: ml-service
+      - run: ../.venv-ml/bin/pytest
+        working-directory: ml-service
       - uses: actions/setup-node@v4
         with: {node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json}
       - run: npm ci

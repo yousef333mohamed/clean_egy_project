@@ -1,12 +1,14 @@
 """Collect and namespace database, document, rule, and future-model evidence."""
 
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, timedelta
 from numbers import Number
 
 from app.decision.enums import DecisionEvidenceType, DecisionType
 from app.schemas.decision_evidence import DecisionEvidence
 from app.schemas.retrieval import RetrievalRequest
+from app.integrations.data_science.errors import DataScienceError
+from app.integrations.data_science.interfaces import DisabledDataScienceProvider
 
 TOOL_CATEGORIES = {
     "list_critical_bins": "latest_bin_status",
@@ -35,14 +37,15 @@ class CollectedDecisionEvidence:
 
 
 class DecisionEvidenceCollector:
-    def __init__(self, analytics_service, retrieval_service, context_builder, session, settings) -> None:
+    def __init__(self, analytics_service, retrieval_service, context_builder, session, settings, *, data_science_provider=None) -> None:
         self.analytics_service = analytics_service
         self.retrieval_service = retrieval_service
         self.context_builder = context_builder
         self.session = session
         self.settings = settings
+        self.data_science_provider = data_science_provider or DisabledDataScienceProvider()
 
-    async def collect(self, request, plan) -> CollectedDecisionEvidence:
+    async def collect(self, request, plan, *, request_id: str = "unassigned") -> CollectedDecisionEvidence:
         collected = CollectedDecisionEvidence()
         for index, call in enumerate(plan.analytics_calls, start=1):
             result = await self.analytics_service.execute(call.tool, call.parameters, self.session)
@@ -111,9 +114,142 @@ class DecisionEvidenceCollector:
             collected.warnings.extend(context.warnings)
         elif plan.document_queries:
             collected.warnings.append("No useful document guidance was retrieved.")
+        if plan.requires_data_science:
+            await self._add_model_evidence(request, plan, collected, request_id)
         self._add_rules(plan.decision_type, collected)
         collected.warnings = list(dict.fromkeys(collected.warnings))
         return collected
+
+    async def _add_model_evidence(self, request, plan, collected: CollectedDecisionEvidence, request_id: str) -> None:
+        horizon = next((value for value in (6, 12, 24) if str(value) in request.question), 24)
+        bin_ids = list(dict.fromkeys([*request.scope.bin_ids, *self._planned_ids(plan, "bin_id")]))
+        truck_ids = list(dict.fromkeys([*request.scope.truck_ids, *self._planned_ids(plan, "truck_id")]))
+        region = request.scope.region or next((str(call.parameters["region"]) for call in plan.analytics_calls if call.parameters.get("region")), None)
+        predictions = []
+        try:
+            if plan.decision_type == DecisionType.BIN_ATTENTION_PRIORITY and bin_ids:
+                predictions.extend(await self.data_science_provider.predict_overflow(bin_ids, horizon, request_id=request_id))
+                predictions.extend(await self.data_science_provider.calculate_priority(bin_ids, horizon, request_id=request_id))
+            elif plan.decision_type == DecisionType.TRUCK_PERFORMANCE_RESPONSE and truck_ids:
+                predictions.extend(await self.data_science_provider.detect_anomalies(truck_ids, request_id=request_id))
+            elif plan.decision_type == DecisionType.MISSED_COLLECTION_RESPONSE and region:
+                predictions.extend(await self.data_science_provider.predict_missed_collections(region, horizon, request_id=request_id))
+            elif plan.decision_type == DecisionType.WORKFORCE_OPERATIONAL_RESPONSE and region:
+                forecast_date = request.scope.end_date or date.today() + timedelta(days=1)
+                predictions.extend(await self.data_science_provider.forecast_workforce_requirement(region, "Morning", forecast_date, request_id=request_id))
+        except DataScienceError:
+            collected.warnings.append("Predictive models are unavailable; no model evidence was returned and no mock prediction was substituted.")
+            return
+        if not predictions:
+            collected.warnings.append("Predictive model context is unavailable for the requested assets or scope.")
+            return
+        for index, prediction in enumerate(predictions, start=1):
+            values, description, factors = self._model_values(prediction)
+            warnings = list(getattr(prediction, "warnings", []))
+            version = str(prediction.model_version)
+            production_approved = version not in {"unregistered", "synthetic-test"} and not any("baseline used" in item.casefold() for item in warnings)
+            values.update(
+                {
+                    "model_name": prediction.model_name,
+                    "model_version": version,
+                    "prediction_timestamp": prediction.prediction_timestamp.isoformat(),
+                    "feature_timestamp": prediction.feature_timestamp.isoformat(),
+                    "prediction_horizon": values.get("prediction_horizon"),
+                    "warnings": warnings,
+                    "explanation_factors": factors,
+                    "production_approved": production_approved,
+                    "feature_fresh": not any("stale" in item.casefold() for item in warnings),
+                    "drift_status": "unknown",
+                    "has_data": True,
+                }
+            )
+            collected.evidence.append(
+                DecisionEvidence(
+                    evidence_id=f"M{index}",
+                    source_type=DecisionEvidenceType.MODEL,
+                    category="model_prediction",
+                    description=description,
+                    data_period_start=prediction.feature_timestamp.isoformat(),
+                    data_period_end=prediction.prediction_timestamp.isoformat(),
+                    authority_level="model",
+                    recency="current" if values["feature_fresh"] else "stale",
+                    completeness_notes=[*warnings, "Feature contributions are associations, not causes; model evidence is not policy."],
+                    supporting_values=values,
+                    is_synthetic=getattr(prediction, "is_synthetic", False),
+                )
+            )
+            collected.warnings.extend(warnings)
+
+    @staticmethod
+    def _planned_ids(plan, field: str) -> list[str]:
+        return [str(call.parameters[field]) for call in plan.analytics_calls if call.parameters.get(field)]
+
+    @staticmethod
+    def _model_values(prediction) -> tuple[dict[str, object], str, list[dict[str, object]]]:
+        factors = [item.model_dump(mode="json") for item in getattr(prediction, "top_factors", getattr(prediction, "model_factors", []))]
+        if hasattr(prediction, "score"):
+            return (
+                {"entity_id": prediction.entity_id, "prediction_value": prediction.score, "threshold": None, "prediction_horizon": None},
+                f"Synthetic test model score for {prediction.entity_id}",
+                factors,
+            )
+        if hasattr(prediction, "overflow_probability") and hasattr(prediction, "decision_threshold"):
+            return (
+                {
+                    "entity_id": prediction.bin_id,
+                    "prediction_value": prediction.overflow_probability,
+                    "threshold": prediction.decision_threshold,
+                    "prediction_horizon": prediction.horizon_hours,
+                },
+                f"Bin overflow probability for {prediction.bin_id}",
+                factors,
+            )
+        if hasattr(prediction, "priority_score"):
+            return (
+                {
+                    "entity_id": prediction.bin_id,
+                    "prediction_value": prediction.priority_score,
+                    "threshold": None,
+                    "prediction_horizon": getattr(prediction, "horizon_hours", 24),
+                    "score_components": prediction.score_components,
+                },
+                f"Collection priority score for {prediction.bin_id}",
+                factors,
+            )
+        if hasattr(prediction, "anomaly_score"):
+            return (
+                {
+                    "entity_id": prediction.truck_id,
+                    "prediction_value": prediction.anomaly_score,
+                    "threshold": None,
+                    "prediction_horizon": None,
+                    "triggered_rules": prediction.triggered_rules,
+                },
+                f"ML-detected truck anomaly for {prediction.truck_id}",
+                factors,
+            )
+        if hasattr(prediction, "missed_collection_probability"):
+            return (
+                {
+                    "entity_id": prediction.scope_id,
+                    "prediction_value": prediction.missed_collection_probability,
+                    "threshold": None,
+                    "prediction_horizon": prediction.horizon_hours,
+                },
+                f"Missed-collection probability for {prediction.scope_id}",
+                factors,
+            )
+        return (
+            {
+                "entity_id": f"{prediction.region}:{prediction.shift}",
+                "prediction_value": prediction.required_workers,
+                "threshold": None,
+                "prediction_horizon": prediction.forecast_date.isoformat(),
+                "prediction_interval": prediction.prediction_interval,
+            },
+            f"Workforce requirement forecast for {prediction.region} {prediction.shift}",
+            factors,
+        )
 
     @staticmethod
     def _has_data(evidence) -> bool:

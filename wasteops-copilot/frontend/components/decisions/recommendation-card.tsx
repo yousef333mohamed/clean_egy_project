@@ -16,6 +16,17 @@ export function RecommendationCard({ option }: { option: DecisionOption }) {
       <CardContent className="grid gap-6 md:grid-cols-2">
         <OptionScoreBreakdown option={option} />
         <div className="space-y-3">
+          <div>
+            <p className="text-sm font-medium">Evidence types</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {option.supporting_evidence_ids.map((id) => (
+                <Badge key={id}>
+                  [{id}] {id.startsWith("M") ? "Prediction" : id.startsWith("D") ? "Historical fact" : id.startsWith("R") ? "Configured rule" : "Document guidance"}
+                </Badge>
+              ))}
+            </div>
+            <p className="text-muted-foreground mt-2 text-xs">Model evidence is not official policy, and prediction probability is not the decision confidence score.</p>
+          </div>
           <List title="Expected impact" values={option.expected_impact} />
           <List title="Assumptions" values={option.assumptions} />
           <List

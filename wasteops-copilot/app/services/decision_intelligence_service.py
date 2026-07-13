@@ -1,6 +1,7 @@
 """Human-approved evidence-to-options Decision Intelligence orchestration."""
 
 import json
+import inspect
 import re
 import time
 import uuid
@@ -64,10 +65,13 @@ class DecisionIntelligenceService:
         request_id = uuid.uuid4()
         route = await self.router.route(request)
         plan = self.planner.plan(request, route)
-        if route.unsupported_reason or route.requires_data_science or route.requires_optimization:
+        if route.unsupported_reason or route.requires_optimization:
             response = self._unsupported(request_id, route, plan)
             return response, self._debug(request_id, route, [], [], response.confidence, True)
-        collected = await self.collector.collect(request, plan)
+        if "request_id" in inspect.signature(self.collector.collect).parameters:
+            collected = await self.collector.collect(request, plan, request_id=str(request_id))
+        else:
+            collected = await self.collector.collect(request, plan)
         options = self.option_generator.generate(request, route.decision_type, collected.evidence)
         scored = self.option_scorer.score(options, collected.evidence, request.constraints)
         scored = [
@@ -80,6 +84,7 @@ class DecisionIntelligenceService:
         )
         useful_db = any(item.source_type == DecisionEvidenceType.DATABASE and item.supporting_values.get("has_data") for item in collected.evidence)
         document_found = bool(collected.document_citations)
+        model_found = any(item.source_type == DecisionEvidenceType.MODEL and not item.is_synthetic for item in collected.evidence)
         missing = list(plan.missing_requirements)
         if not useful_db:
             missing.append("Matching operational records for the requested scope")
@@ -88,11 +93,14 @@ class DecisionIntelligenceService:
         elif any(item.source_type == DecisionEvidenceType.DOCUMENT and item.is_synthetic for item in collected.evidence):
             missing.append("A current official procedure to replace synthetic demo guidance")
         missing.append("Confirmed operational resource availability before execution")
+        if plan.requires_data_science and not model_found:
+            missing.append("Available approved predictive model output for the requested scope")
         insufficient = (
             len(collected.evidence) < self.settings.decision_min_evidence_items
             or not useful_db
             or bool(plan.missing_requirements)
             or (self.settings.decision_require_document_guidance and not document_found)
+            or (plan.requires_data_science and not model_found)
             or confidence.score < self.settings.decision_min_confidence
         )
         warnings = list(collected.warnings)

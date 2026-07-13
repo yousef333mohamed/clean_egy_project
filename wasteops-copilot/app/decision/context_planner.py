@@ -16,7 +16,7 @@ class DecisionContextPlanner:
         self.settings = settings
 
     def plan(self, request: DecisionRequest, route) -> DecisionContextPlan:
-        if route.unsupported_reason or route.requires_data_science or route.requires_optimization:
+        if route.unsupported_reason or route.requires_optimization:
             return DecisionContextPlan(
                 decision_type=route.decision_type,
                 analytics_calls=[],
@@ -27,6 +27,14 @@ class DecisionContextPlanner:
                 unsupported_reason=route.unsupported_reason,
             )
         definition = self.decision_registry.get(route.decision_type)
+        if route.requires_data_science and self.settings.data_science_provider == "disabled":
+            return DecisionContextPlan(
+                decision_type=route.decision_type,
+                analytics_calls=[],
+                document_queries=[],
+                required_evidence_categories="model_prediction".split(),
+                requires_data_science=True,
+            )
         extracted = {key: route.scope[key] for key in ("region", "governorate", "bin_ids", "truck_ids", "worker_ids") if route.scope.get(key)}
         effective_request = request.model_copy(update={"scope": request.scope.model_copy(update=extracted)})
         calls: list[PlannedAnalyticsCall] = []
@@ -54,8 +62,9 @@ class DecisionContextPlanner:
             decision_type=route.decision_type,
             analytics_calls=calls,
             document_queries=document_queries,
-            required_evidence_categories=list(definition.required_evidence_categories),
+            required_evidence_categories=[*definition.required_evidence_categories, *(["model_prediction"] if route.requires_data_science else [])],
             missing_requirements=missing,
+            requires_data_science=route.requires_data_science,
         )
 
     def _base_parameters(self, request: DecisionRequest, allowed: tuple[str, ...]) -> dict[str, object]:
