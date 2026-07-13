@@ -282,3 +282,41 @@ Analytics results describe historical records, not predictions or causal conclus
 Production analytics credentials should use a dedicated database role with `SELECT` only and no `CREATE`, `INSERT`, `UPDATE`, `DELETE`, `DROP`, or `ALTER` privileges.
 
 Raw SQL remains disabled. A future restricted Text-to-SQL stage would require a schema allowlist, SQL parser, AST validation, read-only enforcement, table and column allowlists, query-cost and row limits, timeouts, and audit logs. The analytics tool registry remains the safer default workflow.
+
+## Decision Intelligence recommendations
+
+The recommendation layer combines approved historical/latest-state analytics, retrieved guidance, and transparent configured rules. It generates registered alternatives, scores them deterministically, reports evidence-quality confidence, and always requires an authorized manager's approval. It never dispatches trucks, assigns workers, changes schedules, updates records, or otherwise executes an operational action.
+
+Ask for a recommendation:
+
+```bash
+python scripts/query_decision.py --question "What should we prioritize based on the latest available data?"
+```
+
+Ask about one truck:
+
+```bash
+python scripts/query_decision.py --question "Should TRK-014 be inspected?"
+```
+
+Preview the evidence plan without database or model execution:
+
+```bash
+python scripts/query_decision.py --question "What should we do about missed collections?" --region "Greater Cairo" --preview
+```
+
+API example:
+
+```bash
+curl -X POST http://localhost:8000/api/decisions/recommend \
+  -H "Content-Type: application/json" \
+  -d '{"question":"What should we prioritize based on the latest available data?","scope":{"region":"Greater Cairo","use_latest_available_data":true}}'
+```
+
+Additional endpoints are `POST /api/decisions/preview`, `GET /api/decisions/types`, and the development-only `POST /api/decisions/debug`. Debug responses exclude SQL, prompts, embeddings, credentials, document bodies, and provider responses.
+
+Current recommendations are decision support based on historical or latest available records, not predictions. The confidence value measures evidence coverage, authority, completeness, agreement, and recency; it is not the probability that a recommendation is correct. Configured bin thresholds and deterministic truck rules may not be official policies. Synthetic documents receive a source-quality penalty. Prediction providers and route optimization remain disabled future integrations, and mock prediction evidence cannot be enabled in production.
+
+Option scores are calculated only in application code as `service impact × 0.30 + urgency × 0.25 + risk control × 0.20 + feasibility × 0.15 + policy alignment × 0.10`. Components are bounded from zero to one. Review/monitoring actions score higher on known feasibility than actions requiring unconfirmed resources. Current official guidance gives policy alignment `1.0`, unknown-authority guidance `0.5`, synthetic guidance `0.25`, and no document guidance is neutral at `0.5` unless document guidance is configured as mandatory.
+
+Confidence is calculated as `retrieval coverage × 0.25 + source quality × 0.25 + data completeness × 0.20 + source agreement × 0.15 + recency × 0.15`. Source-quality inputs are `1.0` for current official guidance, `0.9` for database evidence, `0.7` for transparent configured rules, `0.5` for unknown-authority guidance, and `0.25` for synthetic guidance. Levels are low below `0.40`, medium from `0.40` through `0.69`, and high from `0.70`. These are evidence-quality heuristics, not scientific certainty or correctness probabilities.

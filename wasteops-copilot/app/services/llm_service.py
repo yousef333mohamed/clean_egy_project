@@ -140,3 +140,24 @@ class LLMService:
         if not isinstance(parsed, dict):
             raise LLMResponseError("Analytics route must be a JSON object")
         return parsed
+
+    async def route_decision(self, *, question: str, decision_types: list[str], tool_catalog: list[dict[str, Any]]) -> dict[str, Any]:
+        """Return a decision-route proposal for strict registry validation."""
+        prompt = load_prompt("decision_router_prompt.txt").format(
+            question=question,
+            decision_types=json.dumps(decision_types),
+            tool_catalog=json.dumps(tool_catalog, ensure_ascii=False, default=str),
+        )
+        content = await self._complete(
+            messages=[{"role": "system", "content": "Return JSON only. Never write SQL or execute actions."}, {"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=800,
+            json_mode=True,
+        )
+        try:
+            parsed = json.loads(content)
+        except json.JSONDecodeError as exc:
+            raise LLMResponseError("Decision route was not valid JSON") from exc
+        if not isinstance(parsed, dict):
+            raise LLMResponseError("Decision route must be a JSON object")
+        return parsed

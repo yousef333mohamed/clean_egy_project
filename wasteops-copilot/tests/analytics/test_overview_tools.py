@@ -11,3 +11,11 @@ async def test_overview_compiles_and_labels_effective_dates(analytics_settings, 
     sql = recording_executor.statements[0][2]
     assert "operations_effective_date" in sql and "trucks_effective_date" in sql
     assert any("coverage may differ" in note for note in result.notes)
+
+
+async def test_latest_overview_uses_per_source_max_dates(analytics_settings, recording_executor):
+    tool = OperationalOverviewTool(analytics_settings)
+    tool.executor = recording_executor
+    await tool.execute(AnalyticsToolParameters(latest_available=True, region="Delta"), object())
+    sql = recording_executor.statements[0][2].casefold()
+    assert sql.count("select max(") >= 3

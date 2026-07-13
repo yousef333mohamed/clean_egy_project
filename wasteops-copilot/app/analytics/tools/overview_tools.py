@@ -65,6 +65,11 @@ class OperationalOverviewTool:
         )
         if params.region:
             operations = operations.where(func.lower(OperationalDaily.region) == params.region.casefold())
+        if params.latest_available and not params.start_date and not params.end_date:
+            operations_max = select(func.max(OperationalDaily.date))
+            if params.region:
+                operations_max = operations_max.where(func.lower(OperationalDaily.region) == params.region.casefold())
+            operations = operations.where(OperationalDaily.date == operations_max.scalar_subquery())
         ops = operations.subquery("overview_operations")
         trucks = self._period(
             select(
@@ -77,6 +82,11 @@ class OperationalOverviewTool:
         )
         if params.region:
             trucks = trucks.where(func.lower(TruckTripLog.region) == params.region.casefold())
+        if params.latest_available and not params.start_date and not params.end_date:
+            trucks_max = select(func.max(TruckTripLog.date))
+            if params.region:
+                trucks_max = trucks_max.where(func.lower(TruckTripLog.region) == params.region.casefold())
+            trucks = trucks.where(TruckTripLog.date == trucks_max.scalar_subquery())
         truck = trucks.subquery("overview_trucks")
         workforce_statement = self._period(
             select(
@@ -88,6 +98,11 @@ class OperationalOverviewTool:
         )
         if params.region:
             workforce_statement = workforce_statement.where(func.lower(Worker.region) == params.region.casefold())
+        if params.latest_available and not params.start_date and not params.end_date:
+            workforce_max = select(func.max(WorkforceAttendance.date)).join(Worker, Worker.worker_id == WorkforceAttendance.worker_id)
+            if params.region:
+                workforce_max = workforce_max.where(func.lower(Worker.region) == params.region.casefold())
+            workforce_statement = workforce_statement.where(WorkforceAttendance.date == workforce_max.scalar_subquery())
         workforce = workforce_statement.subquery("overview_workforce")
         statement = select(
             bins.scalar_subquery().label("total_bins"),

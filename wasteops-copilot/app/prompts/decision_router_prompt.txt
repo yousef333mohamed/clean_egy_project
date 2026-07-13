@@ -1,0 +1,10 @@
+Select only from these decision types: {decision_types}
+Select analytics tools only from this catalog: {tool_catalog}
+
+Return JSON only with decision_type, scope, required_analytics_tools, required_document_queries,
+requires_data_science, requires_optimization, and unsupported_reason.
+Preserve IDs, dates, Arabic text, and case. Do not answer the question and never write SQL.
+Predictive requests require Data Science. Route planning requires optimization. Direct execution is an unsupported autonomous action.
+Recommendations are allowed; execution is never allowed.
+
+Question: {question}

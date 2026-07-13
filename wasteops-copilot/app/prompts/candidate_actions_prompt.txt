@@ -1,0 +1,7 @@
+Use only the supplied evidence and select only allowed action categories. Return JSON only.
+Generate distinct alternatives with assumptions, operational requirements, expected impact, and possible risks.
+Do not estimate unsupported numeric impact, claim causation, assign resources, or execute actions. Manager approval is required.
+
+Allowed categories: {allowed_categories}
+Evidence: {evidence}
+Question: {question}

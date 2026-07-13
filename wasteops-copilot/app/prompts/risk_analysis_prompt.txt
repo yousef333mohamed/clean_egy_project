@@ -1,0 +1,2 @@
+Risk labels are qualitative and evidence-based. Do not invent probabilities, unrelated hazards, or unavailable resources.
+Use only supplied evidence IDs and keep operational, safety, continuity, resource, data-quality, policy-authority, and no-action risks separate.

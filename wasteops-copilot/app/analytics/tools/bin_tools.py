@@ -160,8 +160,8 @@ class _LatestBinsTool:
             columns=list(rows[0]) if rows else [],
             rows=rows,
             filters=params.model_dump(mode="json", exclude_none=True),
-            data_period_start=params.start_timestamp,
-            data_period_end=params.end_timestamp,
+            data_period_start=params.start_timestamp or stats.get("latest_timestamp_available"),
+            data_period_end=params.end_timestamp or stats.get("latest_timestamp_available"),
             notes=notes,
         )
 
