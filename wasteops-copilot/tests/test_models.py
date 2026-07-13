@@ -6,6 +6,7 @@ from sqlalchemy import CheckConstraint, UniqueConstraint, inspect
 from app.models import (
     Base,
     DocumentChunk,
+    KnowledgeDocument,
     EnvironmentalDaily,
     OperationalDaily,
     SmartBin,
@@ -39,6 +40,7 @@ def test_model_table_names_are_registered() -> None:
         "document_chunks",
         "ingestion_runs",
         "ingestion_errors",
+        "knowledge_documents",
     }
     assert expected == set(Base.metadata.tables)
 
@@ -59,6 +61,7 @@ def test_foreign_keys_target_parent_identifiers() -> None:
     assert {fk.target_fullname for fk in OperationalDaily.__table__.c.bin_id.foreign_keys} == {"smart_bins.bin_id"}
     assert {fk.target_fullname for fk in TruckTripLog.__table__.c.truck_id.foreign_keys} == {"trucks.truck_id"}
     assert {fk.target_fullname for fk in WorkforceAttendance.__table__.c.worker_id.foreign_keys} == {"workers.worker_id"}
+    assert {fk.target_fullname for fk in DocumentChunk.__table__.c.document_id.foreign_keys} == {"knowledge_documents.document_id"}
 
 
 def test_document_embedding_uses_configured_vector_type() -> None:
@@ -66,6 +69,7 @@ def test_document_embedding_uses_configured_vector_type() -> None:
     vector_type = DocumentChunk.__table__.c.embedding.type
     assert isinstance(vector_type, Vector)
     assert vector_type.dim == 1536
+    assert inspect(KnowledgeDocument).relationships.chunks.back_populates == "document"
 
 
 def test_relationships_have_back_populates_and_async_loading() -> None:

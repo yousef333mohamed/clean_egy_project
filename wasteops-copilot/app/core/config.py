@@ -1,7 +1,7 @@
 """Environment-backed application configuration."""
 
 from functools import lru_cache
-from pydantic import Field
+from pydantic import AliasChoices, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,8 +19,11 @@ class Settings(BaseSettings):
     llm_api_key: str = Field(default="", repr=False)
     llm_base_url: str = "https://api.openai.com/v1"
     chat_model_name: str = "gpt-4.1-mini"
-    embedding_model_name: str = "text-embedding-3-small"
-    vector_dimensions: int = Field(default=1536, ge=1)
+    embedding_model_name: str = Field(
+        default="text-embedding-3-small",
+        validation_alias=AliasChoices("EMBEDDING_MODEL", "EMBEDDING_MODEL_NAME"),
+    )
+    vector_dimensions: int = Field(default=1536, ge=1, validation_alias=AliasChoices("EMBEDDING_DIMENSIONS", "VECTOR_DIMENSIONS"))
     retrieval_top_k: int = Field(default=8, ge=1, le=100)
     sql_query_timeout_ms: int = Field(default=5000, ge=100)
     sql_row_limit: int = Field(default=200, ge=1, le=5000)
@@ -29,8 +32,27 @@ class Settings(BaseSettings):
     ingestion_strict_columns: bool = False
     enable_ingestion_api: bool = True
     data_dir: str = "data"
+    documents_directory: str = "data/documents"
+    document_chunk_size: int = Field(default=700, gt=0)
+    document_chunk_overlap: int = Field(default=120, ge=0)
+    document_min_chunk_size: int = Field(default=80, gt=0)
+    document_max_file_size_mb: int = Field(default=25, gt=0)
+    document_metadata_strict: bool = False
+    embedding_batch_size: int = Field(default=50, gt=0)
+    embedding_max_retries: int = Field(default=3, ge=0)
+    embedding_timeout_seconds: float = Field(default=60, gt=0)
+    enable_document_ingestion_api: bool = True
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    @model_validator(mode="after")
+    def validate_document_chunking(self) -> "Settings":
+        """Reject chunk settings that cannot produce controlled overlap."""
+        if self.document_chunk_overlap >= self.document_chunk_size:
+            raise ValueError("DOCUMENT_CHUNK_OVERLAP must be smaller than DOCUMENT_CHUNK_SIZE")
+        if self.document_min_chunk_size > self.document_chunk_size:
+            raise ValueError("DOCUMENT_MIN_CHUNK_SIZE must not exceed DOCUMENT_CHUNK_SIZE")
+        return self
+
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore", populate_by_name=True)
 
 
 @lru_cache

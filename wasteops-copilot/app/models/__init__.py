@@ -5,6 +5,7 @@ from app.models.document_chunk import DocumentChunk
 from app.models.environmental_daily import EnvironmentalDaily
 from app.models.ingestion_error import IngestionError
 from app.models.ingestion_run import IngestionRun, IngestionStatus
+from app.models.knowledge_document import DocumentStatus, KnowledgeDocument
 from app.models.operational_daily import OperationalDaily
 from app.models.smart_bin import SmartBin
 from app.models.smart_bin_reading import SmartBinReading
@@ -20,6 +21,8 @@ __all__ = [
     "IngestionError",
     "IngestionRun",
     "IngestionStatus",
+    "DocumentStatus",
+    "KnowledgeDocument",
     "OperationalDaily",
     "SmartBin",
     "SmartBinReading",

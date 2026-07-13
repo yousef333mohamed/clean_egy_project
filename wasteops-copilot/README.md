@@ -144,6 +144,59 @@ python scripts/ingest_csv_data.py --all --dry-run
 python scripts/ingest_csv_data.py --all
 ```
 
+## Knowledge-document ingestion
+
+Place PDF, DOCX, UTF-8 TXT, or Markdown files anywhere under `data/documents/`. Discovery is recursive, ignores hidden and temporary files, enforces the configured size limit, and never modifies source documents.
+
+Validate every document without calling the embedding API:
+
+```bash
+python scripts/ingest_documents.py --all --dry-run
+```
+
+Ingest all documents or one document:
+
+```bash
+python scripts/ingest_documents.py --all
+python scripts/ingest_documents.py --file samples/smart_bin_sensor_fault_sop.md
+```
+
+Embedding configuration is supplied only through environment variables:
+
+```text
+LLM_API_KEY=
+LLM_BASE_URL=https://api.openai.com/v1
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIMENSIONS=1536
+```
+
+Chunk size, overlap, file-size limit, embedding batch size, retry count, and timeout are configurable through the document settings in `.env.example`. Never commit an API key.
+
+### Metadata sidecars
+
+Optional metadata uses the same basename with `.metadata.json`. For example, `truck_manual.pdf` can have `truck_manual.metadata.json`:
+
+```json
+{
+  "title": "Truck Maintenance Manual",
+  "document_type": "maintenance_manual",
+  "department": "maintenance",
+  "asset_type": "truck",
+  "effective_date": "2026-01-01",
+  "version": "2.1",
+  "language": "en"
+}
+```
+
+The document API exposes discovery, dry-run validation, ingestion, document history, and safe chunk previews under `/api/documents`. Vector values, full internal paths, and full chunk content are not returned. Set `ENABLE_DOCUMENT_INGESTION_API=false` to disable write endpoints. These endpoints have no authentication yet and **must be protected before production deployment**.
+
+### Current document limitations
+
+- OCR is not implemented. Scanned PDFs require a future OCR pipeline.
+- Encrypted PDFs are rejected.
+- Retrieval and final RAG answers will be implemented in the next step.
+- The sample Markdown documents are synthetic test material, not official or authoritative policy.
+
 ## Data-model notes
 
 - Telemetry timestamps use timezone-aware PostgreSQL timestamps.
