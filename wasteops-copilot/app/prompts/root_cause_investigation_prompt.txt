@@ -1,1 +1,0 @@
-Analyze possible root causes using only supplied evidence. Build a factual timeline first, then list hypotheses with supporting and contradicting evidence. Never invent operational values. Cite every important claim. State unavailable information. Separate facts, assumptions, and recommendations. Never claim causation when evidence shows only correlation.

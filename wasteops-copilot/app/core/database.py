@@ -1,33 +1,38 @@
-"""Async SQLAlchemy engine and session lifecycle."""
+"""Asynchronous database engine, sessions, and connectivity checks."""
 
 from collections.abc import AsyncIterator
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import get_settings
 
 
-class Base(DeclarativeBase):
-    """Declarative model base."""
-
-
 settings = get_settings()
-engine = create_async_engine(settings.database_url, pool_pre_ping=True)
-SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
+async_engine = create_async_engine(
+    settings.database_url,
+    echo=settings.app_environment == "development" and settings.log_level.upper() == "DEBUG",
+    pool_pre_ping=True,
+    pool_size=settings.database_pool_size,
+    max_overflow=settings.database_max_overflow,
+    pool_recycle=settings.database_pool_recycle_seconds,
+)
+AsyncSessionLocal = async_sessionmaker(bind=async_engine, class_=AsyncSession, expire_on_commit=False, autoflush=False)
 
 
-async def get_db() -> AsyncIterator[AsyncSession]:
-    """Yield a transactional database session and always close it."""
-    async with SessionLocal() as session:
+async def get_db_session() -> AsyncIterator[AsyncSession]:
+    """Yield a session, rolling back failures and always closing it."""
+    session = AsyncSessionLocal()
+    try:
         yield session
+    except Exception:
+        await session.rollback()
+        raise
+    finally:
+        await session.close()
 
 
-async def create_schema() -> None:
-    """Create the pgvector extension and application tables."""
-    from sqlalchemy import text
-    from app.models import attendance, bin, document, environment, operation, trip, truck, workforce  # noqa: F401
-
-    async with engine.begin() as connection:
-        await connection.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
-        await connection.run_sync(Base.metadata.create_all)
+async def check_database_connection() -> None:
+    """Raise the underlying database error when a connectivity check fails."""
+    async with async_engine.connect() as connection:
+        await connection.execute(text("SELECT 1"))

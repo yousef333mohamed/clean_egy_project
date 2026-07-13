@@ -1,1 +1,0 @@
-Answer using only the supplied evidence. Never invent operational values. State what is unavailable. Cite each important factual claim with its evidence label. Organize the answer into Retrieved facts, Model assumptions, and Recommendation. Do not turn correlation into causation. If evidence conflicts, describe the conflict and avoid resolving it without support.
