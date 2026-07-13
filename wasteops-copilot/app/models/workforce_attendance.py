@@ -34,6 +34,6 @@ class WorkforceAttendance(Base):
     present: Mapped[bool] = mapped_column(Boolean, nullable=False, index=True)
     completed_tasks: Mapped[int] = mapped_column(Integer, nullable=False)
     overtime_hours: Mapped[Decimal] = mapped_column(Numeric(8, 2), nullable=False)
-    performance_score: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False)
+    performance_score: Mapped[Decimal | None] = mapped_column(Numeric(5, 2), nullable=True)
 
     worker: Mapped["Worker"] = relationship(back_populates="attendance_records", lazy="raise")

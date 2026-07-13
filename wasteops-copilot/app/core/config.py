@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     retrieval_top_k: int = Field(default=8, ge=1, le=100)
     sql_query_timeout_ms: int = Field(default=5000, ge=100)
     sql_row_limit: int = Field(default=200, ge=1, le=5000)
+    csv_batch_size: int = Field(default=5000, ge=1)
+    source_timezone: str = "Africa/Cairo"
+    ingestion_strict_columns: bool = False
+    enable_ingestion_api: bool = True
+    data_dir: str = "data"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 

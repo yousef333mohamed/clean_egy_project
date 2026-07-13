@@ -109,6 +109,41 @@ TEST_DATABASE_URL=postgresql+asyncpg://wasteops_test:test@localhost:5432/wasteop
 
 Tests marked `integration` are skipped when `TEST_DATABASE_URL` is absent.
 
+## CSV ingestion
+
+Place the eight source CSV files in `data/raw/`. Canonical filenames and the uploaded `(1)` aliases are supported; source files are read-only and are never rewritten. To discover and validate every available file without inserting operational records, run:
+
+```bash
+python scripts/ingest_csv_data.py --all --dry-run
+```
+
+Run the ordered ingestion or one dataset with:
+
+```bash
+python scripts/ingest_csv_data.py --all
+python scripts/ingest_csv_data.py --dataset smart_bins
+```
+
+`--force`, `--batch-size`, and `--strict-columns` are also available. Rejected records are written under `data/rejected/`; missing measurements remain SQL `NULL`.
+
+The development API provides:
+
+- `GET /api/ingestion/files` for allow-listed file discovery
+- `POST /api/ingestion/validate/{dataset_name}` for a dry run
+- `POST /api/ingestion/csv/{dataset_name}` and `POST /api/ingestion/csv` for ingestion
+- `GET /api/ingestion/runs/{run_id}` and `GET /api/ingestion/runs` for audit history
+
+History and row errors are stored in `ingestion_runs` and `ingestion_errors`. Set `ENABLE_INGESTION_API=false` to disable all ingestion POST endpoints. These endpoints have no authentication yet and **must be protected before production deployment**.
+
+Recommended first execution:
+
+```bash
+docker compose up -d database
+alembic upgrade head
+python scripts/ingest_csv_data.py --all --dry-run
+python scripts/ingest_csv_data.py --all
+```
+
 ## Data-model notes
 
 - Telemetry timestamps use timezone-aware PostgreSQL timestamps.

@@ -37,6 +37,8 @@ def test_model_table_names_are_registered() -> None:
         "workers",
         "workforce_attendance",
         "document_chunks",
+        "ingestion_runs",
+        "ingestion_errors",
     }
     assert expected == set(Base.metadata.tables)
 
