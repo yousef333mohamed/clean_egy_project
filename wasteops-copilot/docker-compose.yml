@@ -1,0 +1,28 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: wasteops
+      POSTGRES_USER: wasteops
+      POSTGRES_PASSWORD: wasteops
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wasteops -d wasteops"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports: ["5432:5432"]
+  api:
+    build: .
+    env_file: [.env]
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+    volumes:
+      - ./data:/app/data
+    ports: ["8000:8000"]
+    restart: unless-stopped
+volumes:
+  postgres_data:
