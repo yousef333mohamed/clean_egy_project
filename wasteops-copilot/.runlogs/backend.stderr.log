@@ -1,0 +1,5 @@
+INFO:     Started server process [17004]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+sys:1: SAWarning: SELECT statement has a cartesian product between FROM element(s) "overview_trucks", "overview_workforce" and FROM element "overview_operations".  Apply join condition(s) between each element to resolve.

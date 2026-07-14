@@ -1,0 +1,30 @@
+2026-07-14T08:50:14.420563Z [info     ] application_started            environment=development
+2026-07-14T08:50:26.700503Z [info     ] http_request                   duration_ms=17.6 environment=development method=GET request_id=322314a6-8a30-463f-b156-076601f75868 route=/health service=backend status_code=200
+INFO:     127.0.0.1:52491 - "GET /api/health HTTP/1.1" 200 OK
+2026-07-14T08:50:26.934499Z [info     ] http_request                   duration_ms=174.23 environment=development method=GET request_id=e9ffe482-682a-476f-bd48-571a0661d729 route=/health/database service=backend status_code=200
+INFO:     127.0.0.1:52491 - "GET /api/health/database HTTP/1.1" 200 OK
+HTTP Request: GET http://localhost:8001/api/models/active "HTTP/1.1 200 OK"
+2026-07-14T08:50:36.872770Z [info     ] http_request                   duration_ms=584.17 environment=development method=GET request_id=bc37ab36-5863-4e5b-ba0b-bf6503aab9d9 route=/ml/models/active service=backend status_code=200
+INFO:     127.0.0.1:52504 - "GET /api/ml/models/active HTTP/1.1" 200 OK
+2026-07-14T08:50:38.084114Z [info     ] analytics_query_completed      duration_seconds=1.0655146000008244 row_count=1 tool_name=get_operational_overview
+2026-07-14T08:50:38.086028Z [info     ] analytics_tool_completed       domain=OVERVIEW duration_seconds=1.0809086999997817 no_data=False row_count=1 tool_name=get_operational_overview
+2026-07-14T08:50:38.241877Z [info     ] http_request                   duration_ms=1275.56 environment=development method=POST request_id=2756e550-d809-472c-9850-d9dd34ed0149 route=/analytics/tools/{tool_name} service=backend status_code=200
+INFO:     127.0.0.1:52504 - "POST /api/analytics/tools/get_operational_overview HTTP/1.1" 200 OK
+2026-07-14T08:56:41.635646Z [info     ] http_request                   duration_ms=2.41 environment=development method=OPTIONS request_id=ace62974-e6d0-4e35-b7ce-93bd8c2783bc route=unmatched service=backend status_code=200
+INFO:     127.0.0.1:56683 - "OPTIONS /api/health HTTP/1.1" 200 OK
+2026-07-14T08:56:41.636655Z [info     ] http_request                   duration_ms=2.93 environment=development method=OPTIONS request_id=f85c80a2-5e7e-46d3-bbd0-268a57a87b48 route=unmatched service=backend status_code=200
+INFO:     127.0.0.1:59663 - "OPTIONS /api/analytics/tools/get_operational_overview HTTP/1.1" 200 OK
+2026-07-14T08:56:41.641644Z [info     ] http_request                   duration_ms=3.06 environment=development method=GET request_id=c5e64e88-5da1-4639-a7d6-4cfac4522b9a route=/health service=backend status_code=200
+INFO:     127.0.0.1:56683 - "GET /api/health HTTP/1.1" 200 OK
+2026-07-14T08:56:41.660646Z [info     ] http_request                   duration_ms=1.18 environment=development method=OPTIONS request_id=af40b0b3-4671-44d8-9b2c-bb38e64a4d13 route=unmatched service=backend status_code=200
+INFO:     127.0.0.1:56683 - "OPTIONS /api/health/database HTTP/1.1" 200 OK
+2026-07-14T08:56:41.667659Z [info     ] http_request                   duration_ms=1.91 environment=development method=OPTIONS request_id=546bd046-29ab-4683-8ae1-4602a8b3e646 route=unmatched service=backend status_code=200
+INFO:     127.0.0.1:56683 - "OPTIONS /api/health/version HTTP/1.1" 200 OK
+2026-07-14T08:56:41.684647Z [info     ] http_request                   duration_ms=13.71 environment=development method=GET request_id=e9eff900-7a48-4c7d-9b93-23f936a387c2 route=/health/database service=backend status_code=200
+INFO:     127.0.0.1:56683 - "GET /api/health/database HTTP/1.1" 200 OK
+2026-07-14T08:56:41.689647Z [info     ] http_request                   duration_ms=2.15 environment=development method=GET request_id=488c16e9-250a-4a64-8c7a-e5bbb653e9f0 route=/health/version service=backend status_code=200
+INFO:     127.0.0.1:56683 - "GET /api/health/version HTTP/1.1" 200 OK
+2026-07-14T08:56:42.381527Z [info     ] analytics_query_completed      duration_seconds=0.7306762999996863 row_count=1 tool_name=get_operational_overview
+2026-07-14T08:56:42.382528Z [info     ] analytics_tool_completed       domain=OVERVIEW duration_seconds=0.7362087999990763 no_data=False row_count=1 tool_name=get_operational_overview
+2026-07-14T08:56:42.398542Z [info     ] http_request                   duration_ms=757.87 environment=development method=POST request_id=dd851726-a3a5-40ca-81b5-c85ca87c3ae7 route=/analytics/tools/{tool_name} service=backend status_code=200
+INFO:     127.0.0.1:59663 - "POST /api/analytics/tools/get_operational_overview HTTP/1.1" 200 OK
