@@ -1,0 +1,451 @@
+date,region,temperature_c,rainfall_mm,is_holiday,is_festival,is_weekend,traffic_level
+2026-01-01,Greater Cairo,11.1,0.0,False,False,False,Low
+2026-01-02,Greater Cairo,19.5,0.0,False,False,True,Low
+2026-01-03,Greater Cairo,23.0,0.0,False,False,True,Medium
+2026-01-04,Greater Cairo,21.3,0.0,False,False,False,High
+2026-01-05,Greater Cairo,17.9,0.0,False,False,False,Medium
+2026-01-06,Greater Cairo,18.7,0.0,False,False,False,High
+2026-01-07,Greater Cairo,22.9,0.0,True,False,False,Medium
+2026-01-08,Greater Cairo,17.3,0.0,False,False,False,Medium
+2026-01-09,Greater Cairo,23.0,0.0,False,False,True,Medium
+2026-01-10,Greater Cairo,14.3,0.0,False,False,True,Medium
+2026-01-11,Greater Cairo,15.8,0.0,False,False,False,Low
+2026-01-12,Greater Cairo,25.4,0.0,False,False,False,Medium
+2026-01-13,Greater Cairo,20.3,0.0,False,False,False,Low
+2026-01-14,Greater Cairo,16.7,0.0,False,False,False,Low
+2026-01-15,Greater Cairo,15.7,0.0,False,False,False,High
+2026-01-16,Greater Cairo,20.6,0.0,False,False,True,Low
+2026-01-17,Greater Cairo,16.3,0.0,False,False,True,High
+2026-01-18,Greater Cairo,23.0,0.0,False,False,False,Low
+2026-01-19,Greater Cairo,26.9,0.0,False,False,False,High
+2026-01-20,Greater Cairo,18.1,0.0,False,False,False,Medium
+2026-01-21,Greater Cairo,19.6,0.0,False,False,False,Medium
+2026-01-22,Greater Cairo,14.4,0.0,False,False,False,Low
+2026-01-23,Greater Cairo,20.6,0.0,False,False,True,High
+2026-01-24,Greater Cairo,14.3,0.0,False,False,True,Low
+2026-01-25,Greater Cairo,18.9,0.0,True,False,False,Medium
+2026-01-26,Greater Cairo,6.2,0.0,False,False,False,Medium
+2026-01-27,Greater Cairo,15.3,0.0,False,False,False,Medium
+2026-01-28,Greater Cairo,23.8,0.0,False,False,False,Low
+2026-01-29,Greater Cairo,27.3,0.0,False,False,False,High
+2026-01-30,Greater Cairo,15.6,0.0,False,False,True,Medium
+2026-01-31,Greater Cairo,17.6,0.0,False,False,True,Low
+2026-02-01,Greater Cairo,17.5,0.0,False,False,False,Medium
+2026-02-02,Greater Cairo,25.1,0.0,False,False,False,Medium
+2026-02-03,Greater Cairo,15.1,0.0,False,False,False,Medium
+2026-02-04,Greater Cairo,22.0,0.0,False,False,False,Medium
+2026-02-05,Greater Cairo,12.6,0.0,False,False,False,Medium
+2026-02-06,Greater Cairo,18.4,0.0,False,False,True,Medium
+2026-02-07,Greater Cairo,9.0,0.0,False,False,True,Low
+2026-02-08,Greater Cairo,26.4,0.0,False,False,False,Low
+2026-02-09,Greater Cairo,24.8,0.0,False,False,False,Medium
+2026-02-10,Greater Cairo,18.5,0.0,False,False,False,Medium
+2026-02-11,Greater Cairo,14.8,0.0,False,False,False,Medium
+2026-02-12,Greater Cairo,19.3,0.0,False,False,False,Medium
+2026-02-13,Greater Cairo,17.9,0.0,False,False,True,Medium
+2026-02-14,Greater Cairo,16.6,0.0,False,False,True,Medium
+2026-02-15,Greater Cairo,13.4,0.0,False,False,False,Medium
+2026-02-16,Greater Cairo,15.7,0.0,False,False,False,Medium
+2026-02-17,Greater Cairo,19.3,0.0,False,False,False,Medium
+2026-02-18,Greater Cairo,9.6,0.0,False,False,False,Medium
+2026-02-19,Greater Cairo,18.5,0.0,False,False,False,Medium
+2026-02-20,Greater Cairo,21.6,0.0,False,False,True,Low
+2026-02-21,Greater Cairo,18.8,0.0,False,False,True,Low
+2026-02-22,Greater Cairo,16.7,0.0,False,False,False,High
+2026-02-23,Greater Cairo,7.0,0.0,False,False,False,High
+2026-02-24,Greater Cairo,16.3,0.0,False,False,False,Low
+2026-02-25,Greater Cairo,17.3,0.0,False,False,False,Medium
+2026-02-26,Greater Cairo,20.2,0.0,False,False,False,Medium
+2026-02-27,Greater Cairo,13.3,0.0,False,False,True,Low
+2026-02-28,Greater Cairo,21.0,0.0,False,False,True,High
+2026-03-01,Greater Cairo,24.1,0.0,False,False,False,Medium
+2026-03-02,Greater Cairo,18.9,0.0,False,False,False,Medium
+2026-03-03,Greater Cairo,17.1,0.0,False,False,False,Medium
+2026-03-04,Greater Cairo,20.2,0.0,False,False,False,Low
+2026-03-05,Greater Cairo,15.1,0.0,False,False,False,Medium
+2026-03-06,Greater Cairo,12.5,0.0,False,False,True,Low
+2026-03-07,Greater Cairo,21.1,0.0,False,False,True,Low
+2026-03-08,Greater Cairo,16.4,0.0,False,False,False,Medium
+2026-03-09,Greater Cairo,13.4,0.0,False,False,False,Low
+2026-03-10,Greater Cairo,13.3,0.0,False,False,False,Medium
+2026-03-11,Greater Cairo,11.7,0.0,False,False,False,High
+2026-03-12,Greater Cairo,19.4,0.0,False,False,False,High
+2026-03-13,Greater Cairo,13.0,3.3,False,False,True,High
+2026-03-14,Greater Cairo,19.4,0.0,False,False,True,Medium
+2026-03-15,Greater Cairo,20.2,0.0,False,False,False,Medium
+2026-03-16,Greater Cairo,11.5,0.0,False,False,False,Low
+2026-03-17,Greater Cairo,14.1,0.0,False,False,False,Medium
+2026-03-18,Greater Cairo,12.4,0.0,False,True,False,Medium
+2026-03-19,Greater Cairo,19.5,0.0,False,True,False,Medium
+2026-03-20,Greater Cairo,19.0,0.0,True,True,True,Medium
+2026-03-21,Greater Cairo,17.8,0.0,False,True,True,Low
+2026-03-22,Greater Cairo,12.3,0.0,False,False,False,Medium
+2026-03-23,Greater Cairo,20.0,0.0,False,False,False,High
+2026-03-24,Greater Cairo,16.5,0.0,False,False,False,Low
+2026-03-25,Greater Cairo,17.8,0.0,False,False,False,High
+2026-03-26,Greater Cairo,20.1,0.0,False,False,False,High
+2026-03-27,Greater Cairo,19.3,0.2,False,False,True,Medium
+2026-03-28,Greater Cairo,21.0,0.0,False,False,True,High
+2026-03-29,Greater Cairo,22.5,0.0,False,False,False,Low
+2026-03-30,Greater Cairo,19.5,0.0,False,False,False,Medium
+2026-03-31,Greater Cairo,14.7,0.0,False,False,False,Low
+2026-01-01,Delta,17.1,0.0,False,False,False,Medium
+2026-01-02,Delta,19.9,0.0,False,False,True,Medium
+2026-01-03,Delta,10.1,0.0,False,False,True,Medium
+2026-01-04,Delta,14.2,0.0,False,False,False,Low
+2026-01-05,Delta,16.2,0.0,False,False,False,Medium
+2026-01-06,Delta,15.3,0.0,False,False,False,High
+2026-01-07,Delta,21.1,0.0,True,False,False,Medium
+2026-01-08,Delta,15.1,0.0,False,False,False,High
+2026-01-09,Delta,9.0,0.0,False,False,True,High
+2026-01-10,Delta,25.5,0.0,False,False,True,Medium
+2026-01-11,Delta,23.2,0.0,False,False,False,Low
+2026-01-12,Delta,16.9,0.0,False,False,False,Low
+2026-01-13,Delta,13.2,0.0,False,False,False,High
+2026-01-14,Delta,16.5,0.0,False,False,False,High
+2026-01-15,Delta,9.5,0.0,False,False,False,Medium
+2026-01-16,Delta,13.1,3.4,False,False,True,Medium
+2026-01-17,Delta,13.8,0.0,False,False,True,Low
+2026-01-18,Delta,18.6,0.0,False,False,False,Low
+2026-01-19,Delta,15.4,0.0,False,False,False,Low
+2026-01-20,Delta,9.7,0.0,False,False,False,Medium
+2026-01-21,Delta,16.7,0.0,False,False,False,Medium
+2026-01-22,Delta,14.1,0.0,False,False,False,Low
+2026-01-23,Delta,16.8,0.0,False,False,True,Medium
+2026-01-24,Delta,16.6,0.0,False,False,True,Medium
+2026-01-25,Delta,23.6,0.0,True,False,False,Medium
+2026-01-26,Delta,20.1,0.0,False,False,False,High
+2026-01-27,Delta,6.9,0.0,False,False,False,Low
+2026-01-28,Delta,11.9,0.0,False,False,False,High
+2026-01-29,Delta,13.9,0.0,False,False,False,Low
+2026-01-30,Delta,20.2,0.0,False,False,True,Low
+2026-01-31,Delta,23.7,0.2,False,False,True,Medium
+2026-02-01,Delta,13.9,0.0,False,False,False,Medium
+2026-02-02,Delta,15.6,0.0,False,False,False,Medium
+2026-02-03,Delta,10.2,0.0,False,False,False,Medium
+2026-02-04,Delta,10.5,0.0,False,False,False,High
+2026-02-05,Delta,16.4,0.0,False,False,False,Low
+2026-02-06,Delta,18.0,0.0,False,False,True,Medium
+2026-02-07,Delta,12.9,1.3,False,False,True,Low
+2026-02-08,Delta,19.6,0.0,False,False,False,High
+2026-02-09,Delta,13.4,0.0,False,False,False,Low
+2026-02-10,Delta,18.5,0.0,False,False,False,Medium
+2026-02-11,Delta,11.9,0.0,False,False,False,Medium
+2026-02-12,Delta,12.9,0.0,False,False,False,Low
+2026-02-13,Delta,11.8,0.0,False,False,True,Low
+2026-02-14,Delta,19.4,0.0,False,False,True,Medium
+2026-02-15,Delta,14.2,0.0,False,False,False,Medium
+2026-02-16,Delta,22.8,0.0,False,False,False,High
+2026-02-17,Delta,10.6,0.0,False,False,False,Medium
+2026-02-18,Delta,21.8,1.5,False,False,False,Medium
+2026-02-19,Delta,12.1,0.0,False,False,False,Medium
+2026-02-20,Delta,20.4,0.0,False,False,True,Low
+2026-02-21,Delta,20.1,0.0,False,False,True,Low
+2026-02-22,Delta,14.8,0.0,False,False,False,Low
+2026-02-23,Delta,14.7,0.0,False,False,False,High
+2026-02-24,Delta,14.2,0.0,False,False,False,Medium
+2026-02-25,Delta,14.8,0.0,False,False,False,High
+2026-02-26,Delta,8.3,0.0,False,False,False,Medium
+2026-02-27,Delta,16.2,0.0,False,False,True,High
+2026-02-28,Delta,8.1,0.0,False,False,True,Low
+2026-03-01,Delta,16.7,0.0,False,False,False,High
+2026-03-02,Delta,19.7,0.0,False,False,False,Medium
+2026-03-03,Delta,7.6,0.0,False,False,False,Low
+2026-03-04,Delta,18.6,0.0,False,False,False,Medium
+2026-03-05,Delta,19.4,0.0,False,False,False,High
+2026-03-06,Delta,15.1,0.0,False,False,True,Low
+2026-03-07,Delta,11.5,0.0,False,False,True,Medium
+2026-03-08,Delta,16.4,0.0,False,False,False,Medium
+2026-03-09,Delta,21.9,0.0,False,False,False,Medium
+2026-03-10,Delta,16.0,0.0,False,False,False,High
+2026-03-11,Delta,10.8,0.0,False,False,False,High
+2026-03-12,Delta,11.5,1.7,False,False,False,Low
+2026-03-13,Delta,16.9,0.0,False,False,True,Low
+2026-03-14,Delta,17.9,0.0,False,False,True,Low
+2026-03-15,Delta,20.2,0.0,False,False,False,Medium
+2026-03-16,Delta,18.6,0.0,False,False,False,Low
+2026-03-17,Delta,20.1,0.0,False,False,False,Low
+2026-03-18,Delta,15.2,0.0,False,True,False,Medium
+2026-03-19,Delta,16.9,0.0,False,True,False,Medium
+2026-03-20,Delta,13.5,0.0,True,True,True,High
+2026-03-21,Delta,8.7,0.0,False,True,True,Low
+2026-03-22,Delta,21.7,0.0,False,False,False,Low
+2026-03-23,Delta,21.7,0.0,False,False,False,Low
+2026-03-24,Delta,8.0,0.0,False,False,False,Medium
+2026-03-25,Delta,16.8,0.0,False,False,False,Medium
+2026-03-26,Delta,20.1,0.0,False,False,False,Medium
+2026-03-27,Delta,7.4,2.5,False,False,True,Low
+2026-03-28,Delta,17.8,0.0,False,False,True,Medium
+2026-03-29,Delta,13.8,0.0,False,False,False,High
+2026-03-30,Delta,15.5,0.0,False,False,False,High
+2026-03-31,Delta,16.1,0.0,False,False,False,High
+2026-01-01,Canal & Sinai,18.7,0.0,False,False,False,Medium
+2026-01-02,Canal & Sinai,19.2,0.0,False,False,True,Medium
+2026-01-03,Canal & Sinai,4.8,0.0,False,False,True,Medium
+2026-01-04,Canal & Sinai,15.7,0.0,False,False,False,Low
+2026-01-05,Canal & Sinai,21.1,0.0,False,False,False,Medium
+2026-01-06,Canal & Sinai,16.8,0.0,False,False,False,High
+2026-01-07,Canal & Sinai,12.9,0.0,True,False,False,Low
+2026-01-08,Canal & Sinai,10.1,0.0,False,False,False,High
+2026-01-09,Canal & Sinai,22.2,0.0,False,False,True,High
+2026-01-10,Canal & Sinai,16.9,0.0,False,False,True,Low
+2026-01-11,Canal & Sinai,13.8,0.0,False,False,False,Low
+2026-01-12,Canal & Sinai,12.1,0.0,False,False,False,Low
+2026-01-13,Canal & Sinai,9.8,0.0,False,False,False,Medium
+2026-01-14,Canal & Sinai,13.5,0.0,False,False,False,High
+2026-01-15,Canal & Sinai,18.0,0.0,False,False,False,High
+2026-01-16,Canal & Sinai,17.9,0.0,False,False,True,Low
+2026-01-17,Canal & Sinai,12.2,0.0,False,False,True,Low
+2026-01-18,Canal & Sinai,17.7,0.0,False,False,False,Low
+2026-01-19,Canal & Sinai,16.1,0.0,False,False,False,Low
+2026-01-20,Canal & Sinai,18.0,0.0,False,False,False,Medium
+2026-01-21,Canal & Sinai,20.2,0.0,False,False,False,Low
+2026-01-22,Canal & Sinai,17.4,0.0,False,False,False,Medium
+2026-01-23,Canal & Sinai,20.1,0.0,False,False,True,Low
+2026-01-24,Canal & Sinai,23.3,0.0,False,False,True,Low
+2026-01-25,Canal & Sinai,14.8,0.0,True,False,False,Medium
+2026-01-26,Canal & Sinai,13.9,2.9,False,False,False,Medium
+2026-01-27,Canal & Sinai,13.8,0.0,False,False,False,High
+2026-01-28,Canal & Sinai,19.2,5.2,False,False,False,High
+2026-01-29,Canal & Sinai,18.6,0.0,False,False,False,Medium
+2026-01-30,Canal & Sinai,14.9,0.0,False,False,True,Low
+2026-01-31,Canal & Sinai,14.3,0.0,False,False,True,Low
+2026-02-01,Canal & Sinai,11.4,0.0,False,False,False,Low
+2026-02-02,Canal & Sinai,12.6,0.0,False,False,False,Medium
+2026-02-03,Canal & Sinai,11.9,0.0,False,False,False,Medium
+2026-02-04,Canal & Sinai,17.0,0.0,False,False,False,Low
+2026-02-05,Canal & Sinai,16.9,0.0,False,False,False,Medium
+2026-02-06,Canal & Sinai,18.9,0.0,False,False,True,High
+2026-02-07,Canal & Sinai,17.5,0.0,False,False,True,High
+2026-02-08,Canal & Sinai,11.1,0.0,False,False,False,High
+2026-02-09,Canal & Sinai,17.8,0.0,False,False,False,High
+2026-02-10,Canal & Sinai,15.0,0.0,False,False,False,Low
+2026-02-11,Canal & Sinai,17.5,0.0,False,False,False,Medium
+2026-02-12,Canal & Sinai,21.0,0.0,False,False,False,Low
+2026-02-13,Canal & Sinai,20.7,0.0,False,False,True,Medium
+2026-02-14,Canal & Sinai,13.9,0.0,False,False,True,High
+2026-02-15,Canal & Sinai,19.6,0.0,False,False,False,High
+2026-02-16,Canal & Sinai,12.5,3.4,False,False,False,Low
+2026-02-17,Canal & Sinai,28.4,0.0,False,False,False,Low
+2026-02-18,Canal & Sinai,19.3,0.0,False,False,False,Medium
+2026-02-19,Canal & Sinai,14.6,0.0,False,False,False,High
+2026-02-20,Canal & Sinai,23.9,0.0,False,False,True,Medium
+2026-02-21,Canal & Sinai,15.8,0.0,False,False,True,Medium
+2026-02-22,Canal & Sinai,16.9,0.0,False,False,False,Low
+2026-02-23,Canal & Sinai,15.6,0.0,False,False,False,Low
+2026-02-24,Canal & Sinai,16.0,2.2,False,False,False,Low
+2026-02-25,Canal & Sinai,16.9,0.0,False,False,False,Medium
+2026-02-26,Canal & Sinai,13.3,0.0,False,False,False,Low
+2026-02-27,Canal & Sinai,12.4,0.0,False,False,True,High
+2026-02-28,Canal & Sinai,20.1,0.0,False,False,True,Medium
+2026-03-01,Canal & Sinai,14.5,0.0,False,False,False,High
+2026-03-02,Canal & Sinai,19.5,0.0,False,False,False,Medium
+2026-03-03,Canal & Sinai,17.4,0.0,False,False,False,Medium
+2026-03-04,Canal & Sinai,13.8,0.0,False,False,False,High
+2026-03-05,Canal & Sinai,18.0,0.0,False,False,False,Medium
+2026-03-06,Canal & Sinai,20.1,0.0,False,False,True,Medium
+2026-03-07,Canal & Sinai,22.6,0.0,False,False,True,Low
+2026-03-08,Canal & Sinai,17.8,0.0,False,False,False,Low
+2026-03-09,Canal & Sinai,20.6,0.0,False,False,False,Medium
+2026-03-10,Canal & Sinai,16.0,0.0,False,False,False,Low
+2026-03-11,Canal & Sinai,17.9,0.0,False,False,False,Medium
+2026-03-12,Canal & Sinai,17.2,0.0,False,False,False,Low
+2026-03-13,Canal & Sinai,16.9,0.0,False,False,True,Low
+2026-03-14,Canal & Sinai,14.9,0.0,False,False,True,Medium
+2026-03-15,Canal & Sinai,17.4,0.0,False,False,False,High
+2026-03-16,Canal & Sinai,18.3,0.0,False,False,False,Low
+2026-03-17,Canal & Sinai,18.0,0.0,False,False,False,High
+2026-03-18,Canal & Sinai,22.0,0.0,False,True,False,High
+2026-03-19,Canal & Sinai,27.8,0.0,False,True,False,Medium
+2026-03-20,Canal & Sinai,14.2,0.0,True,True,True,Medium
+2026-03-21,Canal & Sinai,15.5,0.0,False,True,True,Low
+2026-03-22,Canal & Sinai,19.9,0.0,False,False,False,High
+2026-03-23,Canal & Sinai,17.9,0.0,False,False,False,Medium
+2026-03-24,Canal & Sinai,13.8,0.0,False,False,False,Medium
+2026-03-25,Canal & Sinai,14.9,0.0,False,False,False,High
+2026-03-26,Canal & Sinai,19.3,0.0,False,False,False,Medium
+2026-03-27,Canal & Sinai,19.4,0.0,False,False,True,Low
+2026-03-28,Canal & Sinai,10.2,0.0,False,False,True,Low
+2026-03-29,Canal & Sinai,13.6,0.0,False,False,False,Medium
+2026-03-30,Canal & Sinai,12.1,0.0,False,False,False,Low
+2026-03-31,Canal & Sinai,18.9,0.0,False,False,False,Low
+2026-01-01,Upper Egypt,18.1,0.0,False,False,False,Medium
+2026-01-02,Upper Egypt,10.7,0.0,False,False,True,Medium
+2026-01-03,Upper Egypt,20.1,0.0,False,False,True,Low
+2026-01-04,Upper Egypt,30.1,0.0,False,False,False,Low
+2026-01-05,Upper Egypt,15.3,0.0,False,False,False,Low
+2026-01-06,Upper Egypt,20.9,0.0,False,False,False,Low
+2026-01-07,Upper Egypt,20.1,0.0,True,False,False,Medium
+2026-01-08,Upper Egypt,17.3,0.0,False,False,False,Medium
+2026-01-09,Upper Egypt,23.0,0.0,False,False,True,Medium
+2026-01-10,Upper Egypt,17.7,0.0,False,False,True,Low
+2026-01-11,Upper Egypt,17.8,0.0,False,False,False,High
+2026-01-12,Upper Egypt,26.5,0.0,False,False,False,Medium
+2026-01-13,Upper Egypt,20.1,0.0,False,False,False,Medium
+2026-01-14,Upper Egypt,16.8,0.0,False,False,False,Medium
+2026-01-15,Upper Egypt,16.2,0.0,False,False,False,High
+2026-01-16,Upper Egypt,14.5,0.0,False,False,True,Medium
+2026-01-17,Upper Egypt,22.9,0.0,False,False,True,Medium
+2026-01-18,Upper Egypt,22.4,0.0,False,False,False,Medium
+2026-01-19,Upper Egypt,27.9,0.0,False,False,False,Low
+2026-01-20,Upper Egypt,19.8,0.0,False,False,False,Low
+2026-01-21,Upper Egypt,18.5,0.0,False,False,False,Medium
+2026-01-22,Upper Egypt,13.0,0.0,False,False,False,Low
+2026-01-23,Upper Egypt,16.9,0.0,False,False,True,Low
+2026-01-24,Upper Egypt,19.7,0.0,False,False,True,High
+2026-01-25,Upper Egypt,19.6,0.0,True,False,False,Medium
+2026-01-26,Upper Egypt,25.2,0.0,False,False,False,Medium
+2026-01-27,Upper Egypt,21.2,0.0,False,False,False,High
+2026-01-28,Upper Egypt,8.1,0.0,False,False,False,Medium
+2026-01-29,Upper Egypt,19.0,0.0,False,False,False,Low
+2026-01-30,Upper Egypt,23.0,0.0,False,False,True,Low
+2026-01-31,Upper Egypt,17.7,0.0,False,False,True,Low
+2026-02-01,Upper Egypt,23.2,0.0,False,False,False,Low
+2026-02-02,Upper Egypt,4.7,0.0,False,False,False,Low
+2026-02-03,Upper Egypt,17.3,0.0,False,False,False,Medium
+2026-02-04,Upper Egypt,20.1,0.0,False,False,False,Low
+2026-02-05,Upper Egypt,22.3,0.0,False,False,False,High
+2026-02-06,Upper Egypt,31.4,0.0,False,False,True,Low
+2026-02-07,Upper Egypt,22.2,0.0,False,False,True,Medium
+2026-02-08,Upper Egypt,17.9,0.0,False,False,False,Low
+2026-02-09,Upper Egypt,32.9,0.0,False,False,False,Low
+2026-02-10,Upper Egypt,18.5,0.0,False,False,False,High
+2026-02-11,Upper Egypt,6.2,0.0,False,False,False,Medium
+2026-02-12,Upper Egypt,17.5,0.0,False,False,False,Medium
+2026-02-13,Upper Egypt,26.5,0.0,False,False,True,Medium
+2026-02-14,Upper Egypt,21.4,0.0,False,False,True,High
+2026-02-15,Upper Egypt,22.5,0.0,False,False,False,Low
+2026-02-16,Upper Egypt,22.0,0.0,False,False,False,Medium
+2026-02-17,Upper Egypt,22.1,0.0,False,False,False,Medium
+2026-02-18,Upper Egypt,20.1,0.0,False,False,False,Low
+2026-02-19,Upper Egypt,8.9,0.0,False,False,False,Low
+2026-02-20,Upper Egypt,25.0,0.0,False,False,True,Low
+2026-02-21,Upper Egypt,21.3,0.3,False,False,True,Medium
+2026-02-22,Upper Egypt,33.8,0.0,False,False,False,Medium
+2026-02-23,Upper Egypt,24.2,0.0,False,False,False,High
+2026-02-24,Upper Egypt,9.7,1.8,False,False,False,High
+2026-02-25,Upper Egypt,19.1,0.0,False,False,False,Low
+2026-02-26,Upper Egypt,23.7,0.0,False,False,False,High
+2026-02-27,Upper Egypt,19.8,0.0,False,False,True,Medium
+2026-02-28,Upper Egypt,9.1,0.0,False,False,True,Low
+2026-03-01,Upper Egypt,26.0,0.0,False,False,False,Medium
+2026-03-02,Upper Egypt,15.0,0.0,False,False,False,Medium
+2026-03-03,Upper Egypt,32.7,0.0,False,False,False,Low
+2026-03-04,Upper Egypt,18.1,0.0,False,False,False,High
+2026-03-05,Upper Egypt,14.5,0.0,False,False,False,High
+2026-03-06,Upper Egypt,28.0,0.0,False,False,True,Medium
+2026-03-07,Upper Egypt,22.5,0.0,False,False,True,Medium
+2026-03-08,Upper Egypt,19.6,0.0,False,False,False,Medium
+2026-03-09,Upper Egypt,12.3,0.0,False,False,False,Medium
+2026-03-10,Upper Egypt,16.9,0.0,False,False,False,Medium
+2026-03-11,Upper Egypt,25.6,0.0,False,False,False,High
+2026-03-12,Upper Egypt,23.5,0.0,False,False,False,Medium
+2026-03-13,Upper Egypt,15.6,0.0,False,False,True,Low
+2026-03-14,Upper Egypt,19.1,0.0,False,False,True,Medium
+2026-03-15,Upper Egypt,17.8,0.0,False,False,False,Medium
+2026-03-16,Upper Egypt,16.5,0.0,False,False,False,Medium
+2026-03-17,Upper Egypt,15.7,0.0,False,False,False,Low
+2026-03-18,Upper Egypt,18.2,0.0,False,True,False,Medium
+2026-03-19,Upper Egypt,15.5,0.0,False,True,False,Low
+2026-03-20,Upper Egypt,12.8,0.0,True,True,True,Medium
+2026-03-21,Upper Egypt,16.3,0.0,False,True,True,Low
+2026-03-22,Upper Egypt,8.4,0.0,False,False,False,Medium
+2026-03-23,Upper Egypt,27.7,0.0,False,False,False,Low
+2026-03-24,Upper Egypt,25.7,0.0,False,False,False,High
+2026-03-25,Upper Egypt,19.9,0.0,False,False,False,Low
+2026-03-26,Upper Egypt,25.1,0.0,False,False,False,Medium
+2026-03-27,Upper Egypt,18.8,0.0,False,False,True,Low
+2026-03-28,Upper Egypt,11.6,0.0,False,False,True,Low
+2026-03-29,Upper Egypt,25.0,0.0,False,False,False,High
+2026-03-30,Upper Egypt,22.9,0.0,False,False,False,Low
+2026-03-31,Upper Egypt,24.1,0.0,False,False,False,Low
+2026-01-01,Coastal & Red Sea,17.6,0.0,False,False,False,High
+2026-01-02,Coastal & Red Sea,17.4,0.0,False,False,True,High
+2026-01-03,Coastal & Red Sea,16.5,0.0,False,False,True,Medium
+2026-01-04,Coastal & Red Sea,22.0,0.0,False,False,False,Low
+2026-01-05,Coastal & Red Sea,13.3,0.0,False,False,False,High
+2026-01-06,Coastal & Red Sea,18.5,0.0,False,False,False,Medium
+2026-01-07,Coastal & Red Sea,16.7,0.0,True,False,False,Medium
+2026-01-08,Coastal & Red Sea,21.0,0.0,False,False,False,High
+2026-01-09,Coastal & Red Sea,17.7,0.0,False,False,True,High
+2026-01-10,Coastal & Red Sea,16.3,0.0,False,False,True,Medium
+2026-01-11,Coastal & Red Sea,19.6,0.0,False,False,False,Low
+2026-01-12,Coastal & Red Sea,24.4,0.0,False,False,False,High
+2026-01-13,Coastal & Red Sea,18.9,1.2,False,False,False,Medium
+2026-01-14,Coastal & Red Sea,21.5,0.0,False,False,False,Low
+2026-01-15,Coastal & Red Sea,19.7,0.0,False,False,False,High
+2026-01-16,Coastal & Red Sea,16.9,0.0,False,False,True,Low
+2026-01-17,Coastal & Red Sea,22.3,0.0,False,False,True,Medium
+2026-01-18,Coastal & Red Sea,12.4,0.0,False,False,False,Medium
+2026-01-19,Coastal & Red Sea,20.7,0.0,False,False,False,Medium
+2026-01-20,Coastal & Red Sea,20.5,0.0,False,False,False,Medium
+2026-01-21,Coastal & Red Sea,23.6,0.0,False,False,False,Medium
+2026-01-22,Coastal & Red Sea,18.1,0.0,False,False,False,Low
+2026-01-23,Coastal & Red Sea,19.6,0.0,False,False,True,Low
+2026-01-24,Coastal & Red Sea,17.2,0.0,False,False,True,Medium
+2026-01-25,Coastal & Red Sea,20.7,0.0,True,False,False,Medium
+2026-01-26,Coastal & Red Sea,24.3,0.0,False,False,False,High
+2026-01-27,Coastal & Red Sea,18.4,0.0,False,False,False,Low
+2026-01-28,Coastal & Red Sea,21.0,2.9,False,False,False,Medium
+2026-01-29,Coastal & Red Sea,17.4,0.0,False,False,False,Medium
+2026-01-30,Coastal & Red Sea,19.7,0.0,False,False,True,Medium
+2026-01-31,Coastal & Red Sea,22.1,0.0,False,False,True,Low
+2026-02-01,Coastal & Red Sea,20.8,0.0,False,False,False,High
+2026-02-02,Coastal & Red Sea,20.2,0.0,False,False,False,Medium
+2026-02-03,Coastal & Red Sea,18.9,2.3,False,False,False,Medium
+2026-02-04,Coastal & Red Sea,13.8,0.0,False,False,False,Medium
+2026-02-05,Coastal & Red Sea,18.7,0.0,False,False,False,Medium
+2026-02-06,Coastal & Red Sea,20.2,0.0,False,False,True,Low
+2026-02-07,Coastal & Red Sea,21.5,0.0,False,False,True,Medium
+2026-02-08,Coastal & Red Sea,20.1,0.0,False,False,False,High
+2026-02-09,Coastal & Red Sea,24.0,0.0,False,False,False,Medium
+2026-02-10,Coastal & Red Sea,19.6,0.0,False,False,False,Medium
+2026-02-11,Coastal & Red Sea,20.4,0.0,False,False,False,Low
+2026-02-12,Coastal & Red Sea,23.4,0.0,False,False,False,Medium
+2026-02-13,Coastal & Red Sea,20.1,0.0,False,False,True,Low
+2026-02-14,Coastal & Red Sea,22.8,0.0,False,False,True,Low
+2026-02-15,Coastal & Red Sea,21.9,0.0,False,False,False,Medium
+2026-02-16,Coastal & Red Sea,20.4,0.0,False,False,False,High
+2026-02-17,Coastal & Red Sea,23.2,0.0,False,False,False,Medium
+2026-02-18,Coastal & Red Sea,16.5,0.0,False,False,False,Medium
+2026-02-19,Coastal & Red Sea,21.1,0.0,False,False,False,Medium
+2026-02-20,Coastal & Red Sea,22.7,0.0,False,False,True,Medium
+2026-02-21,Coastal & Red Sea,22.1,0.0,False,False,True,Medium
+2026-02-22,Coastal & Red Sea,18.7,0.0,False,False,False,Low
+2026-02-23,Coastal & Red Sea,16.3,0.0,False,False,False,High
+2026-02-24,Coastal & Red Sea,21.5,0.0,False,False,False,Medium
+2026-02-25,Coastal & Red Sea,21.5,0.0,False,False,False,Medium
+2026-02-26,Coastal & Red Sea,13.4,0.0,False,False,False,Medium
+2026-02-27,Coastal & Red Sea,21.8,0.0,False,False,True,Medium
+2026-02-28,Coastal & Red Sea,16.9,0.0,False,False,True,High
+2026-03-01,Coastal & Red Sea,19.6,0.0,False,False,False,Low
+2026-03-02,Coastal & Red Sea,23.1,0.0,False,False,False,Medium
+2026-03-03,Coastal & Red Sea,18.9,0.0,False,False,False,High
+2026-03-04,Coastal & Red Sea,18.8,0.0,False,False,False,High
+2026-03-05,Coastal & Red Sea,22.6,5.1,False,False,False,High
+2026-03-06,Coastal & Red Sea,17.2,0.0,False,False,True,Low
+2026-03-07,Coastal & Red Sea,16.1,0.0,False,False,True,Low
+2026-03-08,Coastal & Red Sea,18.5,0.0,False,False,False,Low
+2026-03-09,Coastal & Red Sea,19.9,0.0,False,False,False,Low
+2026-03-10,Coastal & Red Sea,13.3,0.0,False,False,False,Low
+2026-03-11,Coastal & Red Sea,18.9,0.0,False,False,False,Low
+2026-03-12,Coastal & Red Sea,16.1,0.0,False,False,False,High
+2026-03-13,Coastal & Red Sea,16.0,0.0,False,False,True,Low
+2026-03-14,Coastal & Red Sea,14.7,0.0,False,False,True,Low
+2026-03-15,Coastal & Red Sea,17.8,0.0,False,False,False,Low
+2026-03-16,Coastal & Red Sea,17.0,0.0,False,False,False,Medium
+2026-03-17,Coastal & Red Sea,17.6,0.0,False,False,False,Low
+2026-03-18,Coastal & Red Sea,20.1,0.0,False,True,False,Medium
+2026-03-19,Coastal & Red Sea,13.7,0.0,False,True,False,Low
+2026-03-20,Coastal & Red Sea,18.3,0.0,True,True,True,Medium
+2026-03-21,Coastal & Red Sea,14.5,0.0,False,True,True,Low
+2026-03-22,Coastal & Red Sea,18.3,0.0,False,False,False,Medium
+2026-03-23,Coastal & Red Sea,15.2,0.0,False,False,False,High
+2026-03-24,Coastal & Red Sea,17.9,0.0,False,False,False,Medium
+2026-03-25,Coastal & Red Sea,20.5,0.0,False,False,False,Medium
+2026-03-26,Coastal & Red Sea,16.4,0.0,False,False,False,Medium
+2026-03-27,Coastal & Red Sea,21.5,0.0,False,False,True,Low
+2026-03-28,Coastal & Red Sea,18.5,0.0,False,False,True,High
+2026-03-29,Coastal & Red Sea,19.9,0.0,False,False,False,High
+2026-03-30,Coastal & Red Sea,21.1,0.0,False,False,False,Medium
+2026-03-31,Coastal & Red Sea,18.6,0.0,False,False,False,Low
