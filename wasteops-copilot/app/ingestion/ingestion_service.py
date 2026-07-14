@@ -150,6 +150,7 @@ class IngestionService:
         )
         self.session.add(run)
         await self.session.commit()
+        run_id = run.id
 
         warnings: list[str] = []
         rejected: list[RejectedRecord] = []
@@ -230,7 +231,7 @@ class IngestionService:
             return self._result(run, warnings, report)
         except CsvSchemaError as exc:
             await self.session.rollback()
-            run = await self.session.get(IngestionRun, run.id)
+            run = await self.session.get(IngestionRun, run_id)
             assert run is not None
             run.status = IngestionStatus.FAILED
             run.error_message = str(exc)
@@ -239,7 +240,7 @@ class IngestionService:
             return self._result(run, warnings)
         except Exception as exc:
             await self.session.rollback()
-            failed_run = await self.session.get(IngestionRun, run.id)
+            failed_run = await self.session.get(IngestionRun, run_id)
             if failed_run is not None:
                 failed_run.status = IngestionStatus.FAILED
                 failed_run.error_message = f"{type(exc).__name__}: ingestion could not continue"

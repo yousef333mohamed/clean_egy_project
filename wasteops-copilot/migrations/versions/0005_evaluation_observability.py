@@ -15,9 +15,9 @@ depends_on = None
 
 
 def upgrade() -> None:
-    prompt_status = sa.Enum("DRAFT", "ACTIVE", "INACTIVE", "ARCHIVED", name="prompt_status")
-    run_status = sa.Enum("PENDING", "RUNNING", "COMPLETED", "FAILED", "STOPPED_CRITICAL", name="evaluation_run_status")
-    feedback_type = sa.Enum("HELPFUL", "NOT_HELPFUL", "INCORRECT_DATA", "MISSING_SOURCE", "BAD_RECOMMENDATION", "UNSAFE", "OTHER", name="feedback_type")
+    prompt_status = postgresql.ENUM("DRAFT", "ACTIVE", "INACTIVE", "ARCHIVED", name="prompt_status", create_type=False)
+    run_status = postgresql.ENUM("PENDING", "RUNNING", "COMPLETED", "FAILED", "STOPPED_CRITICAL", name="evaluation_run_status", create_type=False)
+    feedback_type = postgresql.ENUM("HELPFUL", "NOT_HELPFUL", "INCORRECT_DATA", "MISSING_SOURCE", "BAD_RECOMMENDATION", "UNSAFE", "OTHER", name="feedback_type", create_type=False)
     prompt_status.create(op.get_bind(), checkfirst=True)
     run_status.create(op.get_bind(), checkfirst=True)
     feedback_type.create(op.get_bind(), checkfirst=True)
