@@ -18,14 +18,34 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-wasteops}:${POSTGRES_PASSWORD:-wasteops}@database:5432/${POSTGRES_DB:-wasteops}
       DATABASE_SYNC_URL: postgresql+psycopg://${POSTGRES_USER:-wasteops}:${POSTGRES_PASSWORD:-wasteops}@database:5432/${POSTGRES_DB:-wasteops}
+      DATA_SCIENCE_PROVIDER: remote
+      ML_SERVICE_BASE_URL: http://ml_service:8001
+      ML_SERVICE_TOKEN: ${ML_SERVICE_TOKEN:-wasteops-local-service-token}
+      ML_ADMIN_SERVICE_TOKEN: ${ML_ADMIN_SERVICE_TOKEN:-wasteops-local-admin-token}
     depends_on:
       database:
+        condition: service_healthy
+      ml_service:
         condition: service_healthy
     command: ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
     ports: ["8000:8000"]
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  ml_service:
+    build: ./ml-service
+    environment:
+      ML_SERVICE_ENV: development
+      SERVICE_TOKEN: ${ML_SERVICE_TOKEN:-wasteops-local-service-token}
+      ADMIN_SERVICE_TOKEN: ${ML_ADMIN_SERVICE_TOKEN:-wasteops-local-admin-token}
+      REQUIRE_PRODUCTION_MODELS: "false"
+    ports: ["8001:8001"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/api/health/live')"]
       interval: 10s
       timeout: 5s
       retries: 10

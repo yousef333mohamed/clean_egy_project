@@ -5,7 +5,7 @@ import { authEnabled, refreshAccessToken } from "@/auth";
 
 const allowedRoots = new Set([
   "analytics", "audit", "auth", "chat", "decisions", "documents", "evaluation",
-  "feedback", "health", "ingestion", "jobs", "prompts", "retrieval", "traces",
+  "feedback", "health", "ingestion", "jobs", "ml", "prompts", "retrieval", "traces",
 ]);
 const mutating = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 

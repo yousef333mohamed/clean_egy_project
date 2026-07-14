@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from app.auth.dependencies import require_any_permission
 from app.core.config import Settings, get_settings
 from app.integrations.data_science.errors import DataScienceError
-from app.integrations.data_science.factory import build_ml_admin_client
+from app.integrations.data_science.factory import build_ml_admin_client, build_ml_service_client
 from app.integrations.data_science.factory import build_data_science_provider
 from app.integrations.data_science.schemas import (
     ActiveModel,
@@ -54,10 +54,17 @@ def _client(settings: Settings):
     return client
 
 
+def _service_client(settings: Settings):
+    client = build_ml_service_client(settings)
+    if client is None:
+        raise HTTPException(status_code=503, detail="ML model management is unavailable")
+    return client
+
+
 @router.get("/models/active", response_model=list[ActiveModel])
 async def active_models(request: Request, settings: AppSettings):
     try:
-        return await _client(settings).get("/api/models/active", list[ActiveModel], request_id=request.state.request_id)
+        return await _service_client(settings).get("/api/models/active", list[ActiveModel], request_id=request.state.request_id)
     except DataScienceError as exc:
         raise HTTPException(status_code=503, detail="ML model management is unavailable") from exc
 

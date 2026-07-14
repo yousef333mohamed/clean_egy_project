@@ -7,6 +7,7 @@ from app.integrations.data_science.providers import RemoteDataScienceProvider
 
 _remote_provider = None
 _admin_client = None
+_service_client = None
 
 
 def build_data_science_provider(settings):
@@ -27,3 +28,13 @@ def build_ml_admin_client(settings):
     if _admin_client is None:
         _admin_client = DataScienceClient(settings, token=settings.ml_admin_service_token)
     return _admin_client
+
+
+def build_ml_service_client(settings):
+    """Return the least-privileged client for service-readable ML metadata."""
+    global _service_client
+    if settings.data_science_provider != "remote" or not settings.ml_service_token:
+        return None
+    if _service_client is None:
+        _service_client = DataScienceClient(settings)
+    return _service_client
