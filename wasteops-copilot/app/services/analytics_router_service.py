@@ -86,7 +86,11 @@ class AnalyticsRouterService:
         ranking = any(term in lowered for term in ("which region", "highest", "most ", "rank", "أكبر", "اكثر", "أكثر", "رتب"))
         if any(term in lowered for term in ("overview", "operational overview", "ملخص تشغيلي", "نظرة عامة")):
             return self._decision(AnalyticsDomain.OVERVIEW, "get_operational_overview", params)
-        if any(term in lowered for term in ("critical bin", "critical bins", "fill >=", "ممتلئة", "حرجة")):
+        bin_attention = "bin" in lowered and any(
+            term in lowered
+            for term in ("which bins", "bins need attention", "bins should receive", "bin attention")
+        )
+        if bin_attention or any(term in lowered for term in ("critical bin", "critical bins", "fill >=", "ممتلئة", "حرجة")):
             return self._decision(AnalyticsDomain.BINS, "list_critical_bins", params)
         if any(term in lowered for term in ("low battery", "battery bins", "بطارية منخفضة", "البطارية")):
             return self._decision(AnalyticsDomain.BINS, "list_low_battery_bins", params)

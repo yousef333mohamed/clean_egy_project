@@ -19,6 +19,7 @@ def router(analytics_settings):
         ("What is the complaint escalation procedure?", AnalyticsRoute.DOCUMENT_KNOWLEDGE, None),
         ("Which region had the most complaints, and what procedure applies?", AnalyticsRoute.HYBRID_ANALYSIS, "rank_regions_by_operations_metric"),
         ("Which bins will overflow tomorrow?", AnalyticsRoute.UNSUPPORTED, None),
+        ("Which bins should receive manager attention first?", AnalyticsRoute.STRUCTURED_DATA, "list_critical_bins"),
         ("Delete all trip records", AnalyticsRoute.UNSUPPORTED, None),
         ("ما هي المنطقة التي سجلت أكبر عدد من عمليات الجمع الفائتة في مارس 2026؟", AnalyticsRoute.STRUCTURED_DATA, "rank_regions_by_operations_metric"),
     ],
