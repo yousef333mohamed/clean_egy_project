@@ -19,6 +19,7 @@ from app.utils.token_counter import TokenCounter
 from app.prompts.registry import PromptRegistry
 from app.observability.tracer import Tracer
 from app.integrations.data_science.factory import build_data_science_provider
+from app.core.database import AsyncSessionLocal
 
 
 class _UnavailableEmbedding:
@@ -42,7 +43,7 @@ def build_decision_service(session, settings) -> DecisionIntelligenceService:
     decision_registry, analytics_registry, router, planner, llm = build_decision_preview(settings)
     if llm is not None:
         llm.prompt_registry = PromptRegistry(session)
-        llm.tracer = Tracer(session, settings)
+        llm.tracer = Tracer(AsyncSessionLocal, settings)
     try:
         embedding = EmbeddingService(settings)
     except EmbeddingConfigurationError:
@@ -54,7 +55,7 @@ def build_decision_service(session, settings) -> DecisionIntelligenceService:
         query_rewriter=llm if llm and settings.retrieval_enable_query_rewrite else None,
     )
     context = ContextBuilder(TokenCounter(settings.chat_model_name))
-    analytics = AnalyticsService(analytics_registry, settings, tracer=Tracer(session, settings))
+    analytics = AnalyticsService(analytics_registry, settings, tracer=Tracer(AsyncSessionLocal, settings))
     collector = DecisionEvidenceCollector(analytics, retrieval, context, session, settings, data_science_provider=build_data_science_provider(settings))
     return DecisionIntelligenceService(
         router,

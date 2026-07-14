@@ -6,18 +6,27 @@ from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
 from typing import Any, AsyncIterator
 
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
 from app.core.config import Settings, get_settings
+from app.core.logging import get_logger
 from app.models.interaction_trace import InteractionTrace
 from app.observability.context import parent_trace_id_var, request_id_var, trace_id_var
 from app.observability.sanitization import sanitize
 from app.observability.spans import Span
 
+logger = get_logger(__name__)
+
 
 class Tracer:
     """Capture only allow-listed summaries; full content is never persisted."""
 
-    def __init__(self, session: Any | None = None, settings: Settings | None = None) -> None:
-        self.session = session
+    def __init__(
+        self,
+        session_factory: async_sessionmaker[AsyncSession],
+        settings: Settings | None = None,
+    ) -> None:
+        self.session_factory = session_factory
         self.settings = settings or get_settings()
         self.completed_spans: list[InteractionTrace] = []
 
@@ -47,13 +56,28 @@ class Tracer:
             runtime.duration_ms = (time.perf_counter() - timer) * 1000
             record = self._to_record(runtime)
             self.completed_spans.append(record)
-            if self.session is not None:
-                self.session.add(record)
-                await self.session.flush()
-                await self.session.commit()
+            await self._store(record)
             trace_id_var.reset(trace_token)
             parent_trace_id_var.reset(parent_token)
             request_id_var.reset(request_token)
+
+    async def _store(self, record: InteractionTrace) -> None:
+        """Persist a trace independently and never affect the traced workflow."""
+        try:
+            async with self.session_factory() as trace_session:
+                try:
+                    trace_session.add(record)
+                    await trace_session.commit()
+                except Exception:
+                    await trace_session.rollback()
+                    raise
+        except Exception:
+            logger.exception(
+                "interaction_trace_storage_failed",
+                trace_type=record.trace_type,
+                request_id=record.request_id,
+                status=record.status,
+            )
 
     def _to_record(self, span: Span) -> InteractionTrace:
         attrs = span.attributes

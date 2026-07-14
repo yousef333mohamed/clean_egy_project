@@ -10,6 +10,7 @@ from app.core.config import Settings, get_settings
 from app.core.logging import get_logger
 from app.observability.tracer import Tracer
 from app.prompts.registry import PromptRegistry
+from app.core.database import AsyncSessionLocal
 
 logger = get_logger(__name__)
 
@@ -51,7 +52,7 @@ class LLMService:
         self.client = client
         self.sleep = sleep
         self.prompt_registry = prompt_registry or PromptRegistry()
-        self.tracer = tracer or Tracer(settings=self.settings)
+        self.tracer = tracer or Tracer(session_factory=AsyncSessionLocal, settings=self.settings)
 
     async def _complete(
         self,

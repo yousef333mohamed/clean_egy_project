@@ -17,6 +17,7 @@ from app.models.truck_trip_log import TruckTripLog
 from app.models.worker import Worker
 from app.models.workforce_attendance import WorkforceAttendance
 from app.observability.tracer import Tracer
+from app.core.database import AsyncSessionLocal
 
 logger = get_logger(__name__)
 
@@ -27,7 +28,7 @@ class AnalyticsService:
         self.parser = ParameterParser(registry, settings)
         self.evidence_builder = EvidenceBuilder()
         self.executor = QueryExecutor(settings)
-        self.tracer = tracer or Tracer(settings=settings)
+        self.tracer = tracer or Tracer(session_factory=AsyncSessionLocal, settings=settings)
 
     async def _resolve_latest(self, tool_name, params, session):
         if not params.latest_available:

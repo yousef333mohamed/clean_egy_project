@@ -13,16 +13,17 @@ from app.services.rag_service import RAGService
 from app.utils.token_counter import TokenCounter
 from app.prompts.registry import PromptRegistry
 from app.observability.tracer import Tracer
+from app.core.database import AsyncSessionLocal
 
 
 def build_analytics_stack(session, settings):
     registry = build_tool_registry(settings)
     try:
-        llm = LLMService(settings, prompt_registry=PromptRegistry(session), tracer=Tracer(session, settings))
+        llm = LLMService(settings, prompt_registry=PromptRegistry(session), tracer=Tracer(AsyncSessionLocal, settings))
     except LLMConfigurationError:
         llm = None
     router = AnalyticsRouterService(registry, settings, llm_service=llm)
-    analytics = AnalyticsService(registry, settings, tracer=Tracer(session, settings))
+    analytics = AnalyticsService(registry, settings, tracer=Tracer(AsyncSessionLocal, settings))
     answer = AnalyticsAnswerService(llm)
     return registry, router, analytics, answer, llm
 

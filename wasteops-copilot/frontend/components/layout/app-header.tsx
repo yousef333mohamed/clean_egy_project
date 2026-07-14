@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumbs } from "./breadcrumbs";
 import { MobileNavigation } from "./mobile-navigation";
+import { useEffect, useState } from "react";
+
 export function AppHeader({ displayName, permissions }: { displayName?: string; permissions?: string[] }) {
   const backend = useQuery({
     queryKey: ["health"],
@@ -27,6 +29,8 @@ export function AppHeader({ displayName, permissions }: { displayName?: string; 
     enabled: backend.isSuccess,
     staleTime: Number.POSITIVE_INFINITY,
   });
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const { resolvedTheme, setTheme } = useTheme();
   const state = backend.isPending
     ? "Checking"
@@ -67,9 +71,12 @@ export function AppHeader({ displayName, permissions }: { displayName?: string; 
           variant="ghost"
           size="icon"
           aria-label="Toggle color theme"
+          suppressHydrationWarning
           onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
         >
-          {resolvedTheme === "dark" ? (
+          {!mounted ? (
+            <Sun className="size-4 opacity-0" />
+          ) : resolvedTheme === "dark" ? (
             <Sun className="size-4" />
           ) : (
             <Moon className="size-4" />

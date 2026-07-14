@@ -7,6 +7,7 @@ from sqlalchemy import func, select
 from app.api.dependencies import DatabaseSession
 from app.auth.dependencies import require_permission
 from app.core.config import Settings, get_settings
+from app.core.database import AsyncSessionLocal
 from app.integrations.data_science.errors import DataScienceError
 from app.integrations.data_science.factory import build_data_science_provider
 from app.integrations.optimization.client import OptimizationClient, OptimizationUnavailable
@@ -228,7 +229,7 @@ async def explain(plan_id: str, session: DatabaseSession, settings: Settings = D
     explanation = _deterministic_explanation(result)
     generated_by = "deterministic"
     try:
-        candidate = await LLMService(settings, tracer=Tracer(session=session, settings=settings)).generate_grounded_answer(
+        candidate = await LLMService(settings, tracer=Tracer(session_factory=AsyncSessionLocal, settings=settings)).generate_grounded_answer(
             system_prompt=(
                 "Explain only the supplied OR-Tools advisory plan. Do not recalculate, invent numbers, "
                 "dispatch resources, or imply approval. State key constraints, risks, and alternatives. "

@@ -16,6 +16,7 @@ from app.services.rag_service import RAGService
 from app.prompts.registry import PromptRegistry
 from app.observability.tracer import Tracer
 from app.utils.token_counter import TokenCounter
+from app.core.database import AsyncSessionLocal
 
 
 def build_retrieval_service(
@@ -35,13 +36,13 @@ def build_retrieval_service(
         hybrid,
         EvidenceReranker(),
         settings,
-        tracer=Tracer(session, settings),
+        tracer=Tracer(AsyncSessionLocal, settings),
     )
 
 
 def build_rag_service(session: AsyncSession, settings: Settings) -> RAGService:
     """Assemble one request-scoped RAG service and shared chat adapter."""
-    llm = LLMService(settings, prompt_registry=PromptRegistry(session), tracer=Tracer(session, settings))
+    llm = LLMService(settings, prompt_registry=PromptRegistry(session), tracer=Tracer(AsyncSessionLocal, settings))
     retrieval = build_retrieval_service(
         session,
         settings,

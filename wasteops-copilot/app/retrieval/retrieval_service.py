@@ -10,6 +10,7 @@ from app.schemas.retrieval import RetrievalRequest, RetrievalResponse
 from app.utils.text_similarity import limit_document_chunks
 from app.observability.tracer import Tracer
 from app.observability.context import request_id_var
+from app.core.database import AsyncSessionLocal
 
 logger = get_logger(__name__)
 
@@ -23,7 +24,7 @@ class RetrievalService:
         self.hybrid_retriever = hybrid_retriever
         self.reranker = reranker
         self.settings = settings or get_settings()
-        self.tracer = tracer or Tracer(settings=self.settings)
+        self.tracer = tracer or Tracer(session_factory=AsyncSessionLocal, settings=self.settings)
 
     async def search(self, request: RetrievalRequest, *, request_id: str | None = None) -> RetrievalResponse:
         token = request_id_var.set(request_id) if request_id else None

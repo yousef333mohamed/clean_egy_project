@@ -112,4 +112,5 @@ export const apiPost = <T>(
   body: unknown,
   schema: ZodType<T>,
   signal?: AbortSignal,
-) => apiRequest(path, { method: "POST", body, schema, signal });
+  timeoutMs?: number,
+) => apiRequest(path, { method: "POST", body, schema, signal, timeoutMs });

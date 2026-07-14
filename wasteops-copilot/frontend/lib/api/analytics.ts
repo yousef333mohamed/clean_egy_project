@@ -1,11 +1,15 @@
 import { apiPost } from "@/lib/api/client";
 import { analyticsResponseSchema, evidenceSchema } from "@/lib/schemas/api";
+
+const GENERATED_ANSWER_TIMEOUT_MS = 120_000;
+
 export const queryAnalytics = (question: string, signal?: AbortSignal) =>
   apiPost(
     "/api/analytics/query",
     { question },
     analyticsResponseSchema,
     signal,
+    GENERATED_ANSWER_TIMEOUT_MS,
   );
 export const getOperationalOverview = (signal?: AbortSignal) =>
   apiPost(
